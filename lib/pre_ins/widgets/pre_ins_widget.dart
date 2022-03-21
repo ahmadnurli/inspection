@@ -237,7 +237,7 @@ class _PreInsWidgetState extends State<PreInsWidget> {
     preGrid.headers.add(1);
 
     PdfGridRow preHeader = preGrid.headers[0];
-    preHeader.cells[0].value = 'PAST-INSPECTION CHECK LIST';
+    preHeader.cells[0].value = 'PRE-INSPECTION CHECK LIST';
     preHeader.cells[0].columnSpan = 3;
     preHeader.cells[0].style = PdfGridCellStyle(
       font: PdfStandardFont(PdfFontFamily.helvetica, 20),

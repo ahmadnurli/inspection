@@ -22,6 +22,9 @@ class _ReportScreenState extends State<ReportScreen> {
 
   List<String> filesList = [];
   Future listDir() async {
+    setState(() {
+      filesList = [];
+    });
     path = (await getExternalStorageDirectory())!.path;
     Directory dir = Directory(path!);
 
@@ -42,6 +45,8 @@ class _ReportScreenState extends State<ReportScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ListViewPdfWidget(filesList: filesList, path: path);
+    return RefreshIndicator(
+        onRefresh: listDir,
+        child: ListViewPdfWidget(filesList: filesList, path: path));
   }
 }
