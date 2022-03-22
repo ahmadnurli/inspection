@@ -1157,7 +1157,7 @@ class _PastInsWidgetState extends State<PastInsWidget> {
                     SizedBox(
                       height: 8.0,
                     ),
-                    GestureDetector(
+                    InkWell(
                       onTap: () {
                         getImage(ImageSource.camera, TypeImages.km);
                       },
@@ -1181,7 +1181,7 @@ class _PastInsWidgetState extends State<PastInsWidget> {
                     SizedBox(
                       height: 8.0,
                     ),
-                    GestureDetector(
+                    InkWell(
                       onTap: () {
                         getImage(ImageSource.camera, TypeImages.tampakDepan);
                       },
@@ -1231,7 +1231,7 @@ class _PastInsWidgetState extends State<PastInsWidget> {
                             Expanded(
                               child: Padding(
                                 padding: const EdgeInsets.only(right: 8.0),
-                                child: GestureDetector(
+                                child: InkWell(
                                   onTap: () {
                                     getImage(ImageSource.camera,
                                         TypeImages.kisiBlower);
@@ -1301,7 +1301,7 @@ class _PastInsWidgetState extends State<PastInsWidget> {
                             Expanded(
                               child: Padding(
                                 padding: const EdgeInsets.only(right: 8.0),
-                                child: GestureDetector(
+                                child: InkWell(
                                   onTap: () {
                                     getImage(ImageSource.camera,
                                         TypeImages.suhuWindSpd);
@@ -1371,7 +1371,7 @@ class _PastInsWidgetState extends State<PastInsWidget> {
                             Expanded(
                               child: Padding(
                                 padding: const EdgeInsets.only(right: 8.0),
-                                child: GestureDetector(
+                                child: InkWell(
                                   onTap: () {
                                     getImage(ImageSource.camera,
                                         TypeImages.filterCabin);
@@ -2022,7 +2022,7 @@ class _PastInsWidgetState extends State<PastInsWidget> {
                       SizedBox(
                         height: 8.0,
                       ),
-                      GestureDetector(
+                      InkWell(
                         onTap: () {
                           getImage(ImageSource.camera, TypeImages.resultAccu);
                         },
@@ -2060,7 +2060,7 @@ class _PastInsWidgetState extends State<PastInsWidget> {
                       SizedBox(
                         height: 8.0,
                       ),
-                      GestureDetector(
+                      InkWell(
                         onTap: () {
                           showRemarkPerawatanInputPage(
                               context, 'Remark Perawatan');
@@ -2083,7 +2083,7 @@ class _PastInsWidgetState extends State<PastInsWidget> {
                       SizedBox(
                         height: 8.0,
                       ),
-                      GestureDetector(
+                      InkWell(
                         onTap: () {
                           showRemarkPergantianInputPage(
                               context, 'Remark Pergantian');
