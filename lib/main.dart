@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:inspection/constants/color_constant.dart';
 import 'package:inspection/home/screens/screens.dart';
 import 'package:inspection/pre_ins/screens/pre_ins_screen.dart';
+import 'package:inspection/splashscreen/screens/splashscreen_screen.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share/share.dart';
@@ -30,8 +31,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-      
-      home: HomeScreen(),
+      home: SplashScreen(),
     );
   }
 }

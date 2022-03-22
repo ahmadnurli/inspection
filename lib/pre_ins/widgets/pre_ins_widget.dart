@@ -6,7 +6,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:inspection/constants/constants.dart';
-import 'package:inspection/gen/assets.gen.dart';
 import 'package:inspection/helpers/toast.dart';
 import 'package:inspection/input_remark/screens/input_remark_screen.dart';
 import 'package:inspection/mobile.dart';
@@ -101,7 +100,7 @@ class _PreInsWidgetState extends State<PreInsWidget> {
   @override
   void initState() {
     pr = ProgressDialog(context);
-    pr.style(message: 'Please wait...');
+    pr.style(message: 'Mohon tunggu...');
   }
 
   getImage(ImageSource source, TypeImages typeImg) async {
@@ -218,7 +217,7 @@ class _PreInsWidgetState extends State<PreInsWidget> {
     final page = document.pages.add();
 
     page.graphics.drawImage(
-        PdfBitmap(await _readImageData(Assets.mitsubishiMotorsLogo.path)),
+        PdfBitmap(await _readImageData('assets/mitsubishi_motors_logo.jpg')),
         Rect.fromLTWH(0, 0, 80, 80));
 
     page.graphics.drawString(
@@ -233,12 +232,12 @@ class _PreInsWidgetState extends State<PreInsWidget> {
         bounds: Rect.fromLTWH(160, 50, 0, 0));
     //pre-inspection check list
     PdfGrid preGrid = PdfGrid();
-    preGrid.columns.add(count: 3);
+    preGrid.columns.add(count: 7);
     preGrid.headers.add(1);
 
     PdfGridRow preHeader = preGrid.headers[0];
     preHeader.cells[0].value = 'PRE-INSPECTION CHECK LIST';
-    preHeader.cells[0].columnSpan = 3;
+    preHeader.cells[0].columnSpan = 7;
     preHeader.cells[0].style = PdfGridCellStyle(
       font: PdfStandardFont(PdfFontFamily.helvetica, 20),
       textBrush: PdfBrushes.red,
@@ -249,50 +248,73 @@ class _PreInsWidgetState extends State<PreInsWidget> {
     PdfGridRow preRow = preGrid.rows.add();
     preRow.cells[0].value = 'HARI/TANGGAL';
     preRow.cells[1].value = dateController.text;
-    preRow.cells[2].value = 'KENDARAAN TAMPAK DEPAN';
-    preRow.cells[2].style.stringFormat =
+    preRow.cells[1].columnSpan = 3;
+    preRow.cells[4].value = 'KENDARAAN TAMPAK DEPAN';
+    preRow.cells[4].columnSpan = 3;
+    preRow.cells[4].style.stringFormat =
         PdfStringFormat(alignment: PdfTextAlignment.center);
 
     preRow = preGrid.rows.add();
     preRow.cells[0].value = 'NO. WORK ORDER';
     preRow.cells[1].value = noWoController.text;
-    preRow.cells[2].rowSpan = 5;
+    preRow.cells[1].columnSpan = 3;
+    preRow.cells[4].rowSpan = 6;
     try {
-      preRow.cells[2].value =
+      preRow.cells[5].rowSpan = 6;
+      preRow.cells[5].value =
           PdfBitmap(await _readLclStrgImageData(tampakDepanImg!.path));
+      preRow.cells[5].style = PdfGridCellStyle(
+          cellPadding: PdfPaddings(bottom: 0, left: 0, right: 0, top: 0));
+    } catch (e) {
+      log(e.toString());
+    }
+    preRow.cells[6].rowSpan = 6;
+
+    preRow = preGrid.rows.add();
+    preRow.cells[0].value = 'PLAT NOMOR';
+    preRow.cells[1].value = platNomorController.text;
+    preRow.cells[1].columnSpan = 3;
+
+    preRow = preGrid.rows.add();
+    preRow.cells[0].value = 'TYPE KENDARAAN';
+    preRow.cells[1].value = typeKendaraanController.text;
+    preRow.cells[1].columnSpan = 3;
+
+    preRow = preGrid.rows.add();
+    preRow.cells[0].value = 'TEKNISI';
+    preRow.cells[1].value = teknisiController.text;
+    preRow.cells[1].columnSpan = 3;
+
+    preRow = preGrid.rows.add();
+    preRow.cells[0].rowSpan = 2;
+    preRow.cells[0].value = 'KILO METER (KM) 140.020 KM';
+    preRow.cells[1].rowSpan = 2;
+    try {
+      preRow.cells[2].rowSpan = 2;
+      preRow.cells[2].value =
+          PdfBitmap(await _readLclStrgImageData(kmImg!.path));
       preRow.cells[2].style = PdfGridCellStyle(
           cellPadding: PdfPaddings(bottom: 0, left: 0, right: 0, top: 0));
     } catch (e) {
       log(e.toString());
     }
+    preRow.cells[3].rowSpan = 2;
+    preRow.cells[4].value = '';
+    preRow.cells[5].value = '';
+    preRow.cells[6].value = '';
+    preRow.height = 30;
 
     preRow = preGrid.rows.add();
-    preRow.cells[0].value = 'PLAT NOMOR';
-    preRow.cells[1].value = platNomorController.text;
-    preRow.cells[2].value = '';
+    preRow.height = 20;
+    preRow.cells[4].columnSpan = 3;
 
-    preRow = preGrid.rows.add();
-    preRow.cells[0].value = 'TYPE KENDARAAN';
-    preRow.cells[1].value = typeKendaraanController.text;
-    preRow.cells[2].value = '';
-
-    preRow = preGrid.rows.add();
-    preRow.cells[0].value = 'TEKNISI';
-    preRow.cells[1].value = teknisiController.text;
-    preRow.cells[2].value = '';
-
-    preRow = preGrid.rows.add();
-    preRow.cells[0].value = 'KILO METER (KM) 140.020 KM';
-    try {
-      preRow.cells[1].value =
-          PdfBitmap(await _readLclStrgImageData(kmImg!.path));
-      preRow.cells[1].style = PdfGridCellStyle(
-          cellPadding: PdfPaddings(bottom: 0, left: 40, right: 40, top: 0));
-    } catch (e) {
-      log(e.toString());
-    }
-    preRow.cells[2].value = '';
-    preRow.height = 60;
+    preGrid.columns[0].width = 125;
+    preGrid.columns[1].width = 50;
+    preGrid.columns[2].width = 120;
+    preGrid.columns[3].width = 50;
+    preGrid.columns[4].width = 25;
+    preGrid.columns[5].width = 120;
+    preGrid.columns[6].width = 25;
 
     preGrid.style = PdfGridStyle(
         cellPadding: PdfPaddings(left: 2, right: 0, top: 4, bottom: 0));
@@ -399,7 +421,7 @@ class _PreInsWidgetState extends State<PreInsWidget> {
     row.cells[0].value = '';
     try {
       row.cells[1].columnSpan = 2;
-      row.cells[1].value = PdfBitmap(await _readImageData(Assets.wheel.path));
+      row.cells[1].value = PdfBitmap(await _readImageData('assets/wheel.jpg'));
       row.cells[1].style = PdfGridCellStyle(
           cellPadding: PdfPaddings(bottom: 0, left: 23, right: 23, top: 0));
     } catch (e) {
@@ -525,7 +547,7 @@ class _PreInsWidgetState extends State<PreInsWidget> {
     grid.style = PdfGridStyle(
         cellPadding: PdfPaddings(left: 2, right: 0, top: 4, bottom: 0));
 
-    grid.draw(page: page, bounds: Rect.fromLTWH(0, 290, 0, 0));
+    grid.draw(page: page, bounds: Rect.fromLTWH(0, 280, 0, 0));
 
     PdfGrid gridHasilCek = PdfGrid();
     gridHasilCek.columns.add(count: 2);
@@ -615,7 +637,7 @@ class _PreInsWidgetState extends State<PreInsWidget> {
         cellPadding: PdfPaddings(left: 2, right: 0, top: 4, bottom: 0),
         backgroundBrush: PdfBrushes.yellow);
 
-    gridHasilCek.draw(page: page, bounds: Rect.fromLTWH(260, 290, 0, 0));
+    gridHasilCek.draw(page: page, bounds: Rect.fromLTWH(260, 280, 0, 0));
 
     PdfGrid gridResultAccu = PdfGrid();
     gridResultAccu.columns.add(count: 1);
@@ -642,7 +664,7 @@ class _PreInsWidgetState extends State<PreInsWidget> {
       cellPadding: PdfPaddings(left: 2, right: 0, top: 4, bottom: 0),
     );
 
-    gridResultAccu.draw(page: page, bounds: Rect.fromLTWH(260, 520, 0, 0));
+    gridResultAccu.draw(page: page, bounds: Rect.fromLTWH(260, 510, 0, 0));
 
     PdfGrid gridRemark = PdfGrid();
     gridRemark.columns.add(count: 1);
@@ -967,7 +989,7 @@ class _PreInsWidgetState extends State<PreInsWidget> {
               Container(
                 padding: EdgeInsets.all(8.0),
                 decoration: BoxDecoration(
-                  color: ColorConstant.colorGrey,
+                  color: ColorConstant.colorGrey.withOpacity(0.7),
                   border: Border.all(
                       color: ColorConstant.colorBoldPrimary, width: 3.0),
                   borderRadius: BorderRadius.circular(10.0),
@@ -1147,7 +1169,7 @@ class _PreInsWidgetState extends State<PreInsWidget> {
                               fit: BoxFit.cover,
                             )
                           : Image.asset(
-                              Assets.imageCamera.path,
+                              'assets/image_camera.jpg',
                               height: 200,
                               width: 200,
                             ),
@@ -1171,7 +1193,7 @@ class _PreInsWidgetState extends State<PreInsWidget> {
                               fit: BoxFit.cover,
                             )
                           : Image.asset(
-                              Assets.imageCamera.path,
+                              'assets/image_camera.jpg',
                               height: 200,
                               width: 200,
                             ),
@@ -1187,7 +1209,7 @@ class _PreInsWidgetState extends State<PreInsWidget> {
               ),
               Container(
                   decoration: BoxDecoration(
-                    color: ColorConstant.colorGrey,
+                    color: ColorConstant.colorGrey.withOpacity(0.7),
                     border: Border.all(
                       color: ColorConstant.colorRed,
                       width: 3.0,
@@ -1222,7 +1244,7 @@ class _PreInsWidgetState extends State<PreInsWidget> {
                                           fit: BoxFit.cover,
                                         )
                                       : Image.asset(
-                                          Assets.imageCamera.path,
+                                          'assets/image_camera.jpg',
                                           height: 100,
                                           width: 100,
                                         ),
@@ -1292,7 +1314,7 @@ class _PreInsWidgetState extends State<PreInsWidget> {
                                           fit: BoxFit.cover,
                                         )
                                       : Image.asset(
-                                          Assets.imageCamera.path,
+                                          'assets/image_camera.jpg',
                                           height: 100,
                                           width: 100,
                                         ),
@@ -1362,7 +1384,7 @@ class _PreInsWidgetState extends State<PreInsWidget> {
                                           fit: BoxFit.cover,
                                         )
                                       : Image.asset(
-                                          Assets.imageCamera.path,
+                                          'assets/image_camera.jpg',
                                           height: 100,
                                           width: 100,
                                         ),
@@ -1679,7 +1701,7 @@ class _PreInsWidgetState extends State<PreInsWidget> {
               ),
               Container(
                 decoration: BoxDecoration(
-                    color: ColorConstant.colorGrey,
+                    color: ColorConstant.colorGrey.withOpacity(0.7),
                     border: Border.all(
                       color: ColorConstant.colorYellow,
                       width: 3.0,
@@ -1851,7 +1873,7 @@ class _PreInsWidgetState extends State<PreInsWidget> {
                         padding: EdgeInsets.all(8.0),
                         width: double.infinity,
                         decoration: BoxDecoration(
-                            color: ColorConstant.colorYellow,
+                            color: ColorConstant.colorYellow.withOpacity(0.7),
                             border: Border.all(
                               color: ColorConstant.colorYellow,
                               width: 3.0,
@@ -1988,7 +2010,7 @@ class _PreInsWidgetState extends State<PreInsWidget> {
                   padding: EdgeInsets.all(8.0),
                   width: double.infinity,
                   decoration: BoxDecoration(
-                      color: Colors.blue[100],
+                      color: ColorConstant.blue100.withOpacity(0.7),
                       border: Border.all(
                         color: ColorConstant.colorRed,
                         width: 3.0,
@@ -2012,7 +2034,7 @@ class _PreInsWidgetState extends State<PreInsWidget> {
                                 fit: BoxFit.cover,
                               )
                             : Image.asset(
-                                Assets.imageCamera.path,
+                                'assets/image_camera.jpg',
                                 height: 100,
                                 width: 100,
                               ),
@@ -2026,7 +2048,7 @@ class _PreInsWidgetState extends State<PreInsWidget> {
                   padding: EdgeInsets.all(8.0),
                   width: double.infinity,
                   decoration: BoxDecoration(
-                      color: Colors.blue[100],
+                      color: ColorConstant.blue100.withOpacity(0.7),
                       border: Border.all(
                         color: ColorConstant.colorRed,
                         width: 3.0,
