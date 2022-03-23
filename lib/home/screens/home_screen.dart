@@ -97,11 +97,26 @@ class _HomeScreenState extends State<HomeScreen>
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text('Inspection')),
-        body: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: RefreshIndicator(
-                onRefresh: listDir,
-                child: ListViewPdfWidget(filesList: filesList, path: path))),
+        body: Stack(
+          children: [
+            Center(
+              child: Container(
+                height: 300,
+                width: 300,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                  image: AssetImage('assets/icon/icon.png'),
+                  fit: BoxFit.fitWidth,
+                )),
+              ),
+            ),
+            Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: RefreshIndicator(
+                    onRefresh: listDir,
+                    child: ListViewPdfWidget(filesList: filesList, path: path)))
+          ],
+        ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
         floatingActionButton: Padding(
           padding: const EdgeInsets.fromLTRB(8, 8, 8, 16),
@@ -124,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen>
               ),
               // Floating action menu item
               Bubble(
-                title: "Past - Ins",
+                title: "Post - Ins",
                 iconColor: Colors.white,
                 bubbleColor: Colors.blue,
                 icon: Icons.local_car_wash,

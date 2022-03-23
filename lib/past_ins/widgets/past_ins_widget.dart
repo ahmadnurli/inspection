@@ -236,7 +236,7 @@ class _PastInsWidgetState extends State<PastInsWidget> {
     preGrid.headers.add(1);
 
     PdfGridRow preHeader = preGrid.headers[0];
-    preHeader.cells[0].value = 'PAST-INSPECTION CHECK LIST';
+    preHeader.cells[0].value = 'POST-INSPECTION CHECK LIST';
     preHeader.cells[0].columnSpan = 7;
     preHeader.cells[0].style = PdfGridCellStyle(
       font: PdfStandardFont(PdfFontFamily.helvetica, 20),
@@ -1792,7 +1792,7 @@ class _PastInsWidgetState extends State<PastInsWidget> {
                           SizedBox(
                             height: 8.0,
                           ),
-                          Text('Anemoter'),
+                          Text('Anemometer'),
                           SizedBox(
                             height: 8.0,
                           ),
@@ -1941,7 +1941,7 @@ class _PastInsWidgetState extends State<PastInsWidget> {
                             SizedBox(
                               height: 8.0,
                             ),
-                            Text('Anemoter'),
+                            Text('Anemometer'),
                             SizedBox(
                               height: 8.0,
                             ),

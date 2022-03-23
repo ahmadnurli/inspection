@@ -31,13 +31,13 @@ class _PreInsScreenState extends State<PreInsScreen> {
         ],
       ),
       body: Container(
-        height: double.infinity,
-        width: double.infinity,
-        decoration: BoxDecoration(
-            image: DecorationImage(
-          image: AssetImage('assets/icon/icon.png'),
-          fit: BoxFit.fitWidth,
-        )),
+        // height: double.infinity,
+        // width: double.infinity,
+        // decoration: BoxDecoration(
+        //     image: DecorationImage(
+        //   image: AssetImage('assets/icon/icon.png'),
+        //   fit: BoxFit.fitWidth,
+        // )),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Container(child: PreInsWidget()),

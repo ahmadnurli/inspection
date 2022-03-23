@@ -13,7 +13,7 @@ class _PastInsScreenState extends State<PastInsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Past-Inspection'),
+        title: const Text('Post-Inspection'),
         actions: [
           GestureDetector(
               onTap: () {
@@ -29,13 +29,13 @@ class _PastInsScreenState extends State<PastInsScreen> {
         ],
       ),
       body: Container(
-        height: double.infinity,
-        width: double.infinity,
-        decoration: BoxDecoration(
-            image: DecorationImage(
-          image: AssetImage('assets/icon/icon.png'),
-          fit: BoxFit.fitWidth,
-        )),
+        // height: double.infinity,
+        // width: double.infinity,
+        // decoration: BoxDecoration(
+        //     image: DecorationImage(
+        //   image: AssetImage('assets/icon/icon.png'),
+        //   fit: BoxFit.fitWidth,
+        // )),
         child: const Padding(
           padding: EdgeInsets.all(8.0),
           child: PastInsWidget(),

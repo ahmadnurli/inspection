@@ -1792,7 +1792,7 @@ class _PreInsWidgetState extends State<PreInsWidget> {
                           SizedBox(
                             height: 8.0,
                           ),
-                          Text('Anemoter'),
+                          Text('Anemometer'),
                           SizedBox(
                             height: 8.0,
                           ),
@@ -1941,7 +1941,7 @@ class _PreInsWidgetState extends State<PreInsWidget> {
                             SizedBox(
                               height: 8.0,
                             ),
-                            Text('Anemoter'),
+                            Text('Anemometer'),
                             SizedBox(
                               height: 8.0,
                             ),
