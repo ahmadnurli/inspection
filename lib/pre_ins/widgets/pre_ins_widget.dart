@@ -217,19 +217,22 @@ class _PreInsWidgetState extends State<PreInsWidget> {
     final page = document.pages.add();
 
     page.graphics.drawImage(
-        PdfBitmap(await _readImageData('assets/mitsubishi_motors_logo.jpg')),
+        PdfBitmap(await _readImageData('assets/logo_sejuk_lama.jpeg')),
         Rect.fromLTWH(0, 0, 80, 80));
 
     page.graphics.drawString(
         'MITSUBISHI DIPO PLUIT', PdfStandardFont(PdfFontFamily.helvetica, 17),
         brush: PdfBrushes.blue, bounds: Rect.fromLTWH(160, 10, 0, 0));
     page.graphics.drawString(
-        'Jl. Pluit Selatan Raya No.6, Penjaringan, Kec. Penjaringan, Kota Jkt Utara,',
-        PdfStandardFont(PdfFontFamily.helvetica, 13),
-        bounds: Rect.fromLTWH(80, 33, 0, 0));
-    page.graphics.drawString('Daerah Khusus Ibukota Jakarta 14440',
-        PdfStandardFont(PdfFontFamily.helvetica, 13),
+        'Jl. Joglo Raya No.48, RT.7/RW.8, Joglo, Kec. Kembangan, Kota Jakarta Barat,',
+        PdfStandardFont(PdfFontFamily.helvetica, 12),
+        bounds: Rect.fromLTWH(85, 33, 0, 0));
+    page.graphics.drawString('Daerah Khusus Ibukota Jakarta 11640',
+        PdfStandardFont(PdfFontFamily.helvetica, 12),
         bounds: Rect.fromLTWH(160, 50, 0, 0));
+    page.graphics.drawString(
+        'Telpon: 021-58907848', PdfStandardFont(PdfFontFamily.helvetica, 12),
+        bounds: Rect.fromLTWH(200, 65, 0, 0));
     //pre-inspection check list
     PdfGrid preGrid = PdfGrid();
     preGrid.columns.add(count: 7);

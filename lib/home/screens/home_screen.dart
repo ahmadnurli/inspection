@@ -21,7 +21,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen>
-    with SingleTickerProviderStateMixin, TickerProviderStateMixin {
+    with SingleTickerProviderStateMixin {
   Animation<double>? _animation;
   AnimationController? _animationController;
 
@@ -96,26 +96,32 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('Inspection')),
-        body: Stack(
-          children: [
-            Center(
-              child: Container(
-                height: 300,
-                width: 300,
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                  image: AssetImage('assets/icon/icon.png'),
-                  fit: BoxFit.fitWidth,
-                )),
+        appBar: AppBar(
+          title: Text('Inspection'),
+        ),
+        body: Container(
+          color: ColorConstant.grey,
+          child: Stack(
+            children: [
+              Center(
+                child: Container(
+                  height: 300,
+                  width: 300,
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                    image: AssetImage('assets/logo_sejuk_lama.jpeg'),
+                    fit: BoxFit.fitWidth,
+                  )),
+                ),
               ),
-            ),
-            Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: RefreshIndicator(
-                    onRefresh: listDir,
-                    child: ListViewPdfWidget(filesList: filesList, path: path)))
-          ],
+              Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: RefreshIndicator(
+                      onRefresh: listDir,
+                      child:
+                          ListViewPdfWidget(filesList: filesList, path: path)))
+            ],
+          ),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
         floatingActionButton: Padding(

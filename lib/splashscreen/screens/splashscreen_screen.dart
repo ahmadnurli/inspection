@@ -21,13 +21,13 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorConstant.colorWhite,
+      backgroundColor: ColorConstant.grey,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Image.asset(
-              'assets/mitsubishi_motors_logo.jpg',
+              'assets/logo_sejuk_lama.jpeg',
               height: 150.0,
               width: 150.0,
             ),
