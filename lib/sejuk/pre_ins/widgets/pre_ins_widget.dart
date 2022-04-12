@@ -5,6 +5,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:inspection/helpers/db.dart';
+import 'package:inspection/helpers/diagnosis_model.dart';
+import 'package:inspection/helpers/helpers.dart';
 import 'package:inspection/sejuk/constants/constants.dart';
 import 'package:inspection/helpers/toast.dart';
 import 'package:inspection/sejuk/input_remark/screens/input_remark_screen.dart';
@@ -59,6 +62,7 @@ class _PreInsWidgetState extends State<PreInsWidget> {
   TextEditingController rhRrController = TextEditingController();
   TextEditingController keteranganCuciController = TextEditingController();
   TextEditingController diagnosisController = TextEditingController();
+  TextEditingController remarkDiagnosisController = TextEditingController();
 
   FocusNode dateFocus = FocusNode();
   FocusNode noWoFocus = FocusNode();
@@ -608,7 +612,7 @@ class _PreInsWidgetState extends State<PreInsWidget> {
           ),
           TextFormField(
             maxLines: 5,
-            controller: kisiRemarkController,
+            controller: remarkDiagnosisController,
             textInputAction: TextInputAction.next,
             obscureText: false,
             style: const TextStyle(fontFamily: 'Montserrat', fontSize: 16.0),
@@ -685,6 +689,14 @@ class _PreInsWidgetState extends State<PreInsWidget> {
                     // } else {
                     //   myToast.showToast(context, 'Failed!');
                     // }
+                    Diagnosis diagnosis = Diagnosis(
+                        title: diagnosisController.text,
+                        remark: remarkDiagnosisController.text,
+                        img: Utility.base64String(
+                            _selectFile.readAsBytesSync()));
+                    await DiagnosisDatabaseProvider.db
+                        .addItemToDatabase(diagnosis);
+                    Navigator.of(context).pop();
                   },
                 ),
               ),
@@ -695,7 +707,7 @@ class _PreInsWidgetState extends State<PreInsWidget> {
     );
   }
 
-  XFile? _selectFile;
+  var _selectFile;
 
   getImageDiagnosis(ImageSource source) async {
     // ignore: invalid_use_of_visible_for_testing_member
@@ -969,82 +981,133 @@ class _PreInsWidgetState extends State<PreInsWidget> {
                             ),
                           ],
                         ),
-                        SizedBox(
-                          height: 8.0,
-                        ),
-                        Text('Kisi-kisi Blower'),
-                        SizedBox(
-                          height: 8.0,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.only(right: 8.0),
-                                child: InkWell(
-                                  onTap: () {
-                                    getImage(ImageSource.camera,
-                                        TypeImages.kisiBlower);
-                                  },
-                                  child: kisiBlowerImg != null
-                                      ? Image.file(
-                                          File(kisiBlowerImg!.path),
-                                          height: 100,
-                                          width: 100,
-                                          fit: BoxFit.cover,
-                                        )
-                                      : Image.asset(
-                                          'assets/image_camera.jpg',
-                                          height: 100,
-                                          width: 100,
-                                        ),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Container(
-                                height: 100,
-                                child: TextFormField(
-                                  maxLines: 5,
-                                  controller: kisiRemarkController,
-                                  textInputAction: TextInputAction.next,
-                                  obscureText: false,
-                                  style: const TextStyle(
-                                      fontFamily: 'Montserrat', fontSize: 16.0),
-                                  decoration: InputDecoration(
-                                      enabledBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color:
-                                                  ColorConstant.colorPrimary),
-                                          borderRadius:
-                                              BorderRadius.circular(10.0)),
-                                      disabledBorder: OutlineInputBorder(
-                                          borderSide: const BorderSide(
-                                              color:
-                                                  ColorConstant.colorPrimary),
-                                          borderRadius:
-                                              BorderRadius.circular(10.0)),
-                                      labelText: 'Remark',
-                                      labelStyle: const TextStyle(
-                                          color: ColorConstant.colorPrimary),
-                                      contentPadding: const EdgeInsets.fromLTRB(
-                                          20.0, 15.0, 20.0, 15.0),
-                                      // hintText: "Email",
-                                      border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0))),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 8.0,
-                        ),
+                        // SizedBox(
+                        //   height: 8.0,
+                        // ),
+                        // Text('Kisi-kisi Blower'),
+                        // SizedBox(
+                        //   height: 8.0,
+                        // ),
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //   children: [
+                        //     Expanded(
+                        //       child: Padding(
+                        //         padding: const EdgeInsets.only(right: 8.0),
+                        //         child: InkWell(
+                        //           onTap: () {
+                        //             getImage(ImageSource.camera,
+                        //                 TypeImages.kisiBlower);
+                        //           },
+                        //           child: kisiBlowerImg != null
+                        //               ? Image.file(
+                        //                   File(kisiBlowerImg!.path),
+                        //                   height: 100,
+                        //                   width: 100,
+                        //                   fit: BoxFit.cover,
+                        //                 )
+                        //               : Image.asset(
+                        //                   'assets/image_camera.jpg',
+                        //                   height: 100,
+                        //                   width: 100,
+                        //                 ),
+                        //         ),
+                        //       ),
+                        //     ),
+                        //     Expanded(
+                        //       child: Container(
+                        //         height: 100,
+                        //         child: TextFormField(
+                        //           maxLines: 5,
+                        //           controller: kisiRemarkController,
+                        //           textInputAction: TextInputAction.next,
+                        //           obscureText: false,
+                        //           style: const TextStyle(
+                        //               fontFamily: 'Montserrat', fontSize: 16.0),
+                        //           decoration: InputDecoration(
+                        //               enabledBorder: OutlineInputBorder(
+                        //                   borderSide: BorderSide(
+                        //                       color:
+                        //                           ColorConstant.colorPrimary),
+                        //                   borderRadius:
+                        //                       BorderRadius.circular(10.0)),
+                        //               disabledBorder: OutlineInputBorder(
+                        //                   borderSide: const BorderSide(
+                        //                       color:
+                        //                           ColorConstant.colorPrimary),
+                        //                   borderRadius:
+                        //                       BorderRadius.circular(10.0)),
+                        //               labelText: 'Remark',
+                        //               labelStyle: const TextStyle(
+                        //                   color: ColorConstant.colorPrimary),
+                        //               contentPadding: const EdgeInsets.fromLTRB(
+                        //                   20.0, 15.0, 20.0, 15.0),
+                        //               // hintText: "Email",
+                        //               border: OutlineInputBorder(
+                        //                   borderRadius:
+                        //                       BorderRadius.circular(10.0))),
+                        //         ),
+                        //       ),
+                        //     ),
+                        //   ],
+                        // ),
+                        // SizedBox(
+                        //   height: 8.0,
+                        // ),
                       ],
                     ),
                   )),
+              SizedBox(
+                height: 8.0,
+              ),
+              FutureBuilder<List<Diagnosis>>(
+                  future: DiagnosisDatabaseProvider.db.getAllDiagnosis(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<List<Diagnosis>> snapshot) {
+                    if (snapshot.hasData) {
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Expanded(
+                          child: SizedBox(
+                            height: 200,
+                            child: ListView.builder(
+                                itemCount: snapshot.data!.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  Diagnosis diagnosis = snapshot.data![index];
+                                  return Card(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Container(
+                                          height: 100,
+                                          width: 100,
+                                          child: Utility.imageFromBase64String(
+                                              diagnosis.img),
+                                        ),
+                                        Column(
+                                          children: [
+                                            Text(diagnosis.title.toString()),
+                                            SizedBox(
+                                              height: 10.0,
+                                            ),
+                                            Text(diagnosis.remark.toString()),
+                                            SizedBox(
+                                              height: 10.0,
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  );
+                                }),
+                          ),
+                        ),
+                      );
+                    } else {
+                      return Center();
+                    }
+                  }),
               SizedBox(
                 height: 8.0,
               ),
