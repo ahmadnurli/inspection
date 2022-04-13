@@ -20,6 +20,10 @@ class Utility {
     return base64Encode(data);
   }
 
+  static Uint8List convert(String base64String) {
+    return Base64Decoder().convert(base64String);
+  }
+
   // static Future<String> base64ByteData(Asset asset) async {
   //   ByteData byteData = await rootBundle.load(asset.toString());
   //   var buffer = byteData.buffer;

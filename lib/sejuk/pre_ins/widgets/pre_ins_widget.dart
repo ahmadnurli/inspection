@@ -1,8 +1,10 @@
-// ignore_for_file: prefer_const_constructors, avoid_print, unnecessary_string_interpolations, unnecessary_null_comparison, must_call_super, prefer_typing_uninitialized_variables, deprecated_member_use
+// ignore_for_file: prefer_const_constructors, avoid_print, unnecessary_string_interpolations, unnecessary_null_comparison, must_call_super, prefer_typing_uninitialized_variables, deprecated_member_use, unused_local_variable
 
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:inspection/helpers/db.dart';
@@ -108,6 +110,8 @@ class _PreInsWidgetState extends State<PreInsWidget> {
   void initState() {
     pr = ProgressDialog(context);
     pr.style(message: 'Mohon tunggu...');
+    // DiagnosisDatabaseProvider.db.getAllDiagnosis();
+    DiagnosisDatabaseProvider.db.deleteAllItems();
   }
 
   getImage(ImageSource source, TypeImages typeImg) async {
@@ -368,52 +372,70 @@ class _PreInsWidgetState extends State<PreInsWidget> {
     grid.headers[0].cells[2].style = gridStyle;
     grid.headers[0].cells[3].style = gridStyle;
 
-    PdfGridRow row = grid.rows.add();
-    row.cells[0].value = '1';
-    row.cells[1].value = 'KISI-KISI BLOWER';
-    // row.cells[1].columnSpan = 2;
-    try {
-      row.cells[2].value =
-          PdfBitmap(await _readLclStrgImageData(kisiBlowerImg!.path));
-      row.cells[2].style = PdfGridCellStyle();
-      row.cells[2].style = PdfGridCellStyle(
-          cellPadding: PdfPaddings(bottom: 0, left: 0, right: 0, top: 0));
-    } catch (e) {
-      log(e.toString());
+    PdfGridRow row;
+    for (var item in diagnosiss) {
+      row = grid.rows.add();
+      row.cells[0].value = '${item.id}';
+      row.cells[1].value = '${item.title}';
+      // row.cells[1].columnSpan = 2;
+      try {
+        row.cells[2].value =
+            PdfBitmap(await Utility.dataFromBase64String('${item.img}'));
+        row.cells[2].style = PdfGridCellStyle();
+        row.cells[2].style = PdfGridCellStyle(
+            cellPadding: PdfPaddings(bottom: 0, left: 0, right: 0, top: 0));
+      } catch (e) {
+        log(e.toString());
+      }
+      row.cells[3].value = '${item.remark}';
+      row.height = 60;
     }
-    row.cells[3].value = kisiRemarkController.text;
-    row.height = 60;
+    // row = grid.rows.add();
+    // row.cells[0].value = '1';
+    // row.cells[1].value = 'KISI-KISI BLOWER';
+    // // row.cells[1].columnSpan = 2;
+    // try {
+    //   row.cells[2].value =
+    //       PdfBitmap(await _readLclStrgImageData(kisiBlowerImg!.path));
+    //   row.cells[2].style = PdfGridCellStyle();
+    //   row.cells[2].style = PdfGridCellStyle(
+    //       cellPadding: PdfPaddings(bottom: 0, left: 0, right: 0, top: 0));
+    // } catch (e) {
+    //   log(e.toString());
+    // }
+    // row.cells[3].value = kisiRemarkController.text;
+    // row.height = 60;
 
-    row = grid.rows.add();
-    row.cells[0].value = '2';
-    row.cells[1].value = 'SUHU & WIND SPEED';
-    // row.cells[1].columnSpan = 2;
+    // row = grid.rows.add();
+    // row.cells[0].value = '2';
+    // row.cells[1].value = 'SUHU & WIND SPEED';
+    // // row.cells[1].columnSpan = 2;
 
-    try {
-      row.cells[2].value =
-          PdfBitmap(await _readLclStrgImageData(suhuWindSpdImg!.path));
-      row.cells[2].style = PdfGridCellStyle(
-          cellPadding: PdfPaddings(bottom: 0, left: 0, right: 0, top: 0));
-    } catch (e) {
-      log(e.toString());
-    }
-    row.cells[3].value = suhuRemarkController.text;
-    row.height = 60;
+    // try {
+    //   row.cells[2].value =
+    //       PdfBitmap(await _readLclStrgImageData(suhuWindSpdImg!.path));
+    //   row.cells[2].style = PdfGridCellStyle(
+    //       cellPadding: PdfPaddings(bottom: 0, left: 0, right: 0, top: 0));
+    // } catch (e) {
+    //   log(e.toString());
+    // }
+    // row.cells[3].value = suhuRemarkController.text;
+    // row.height = 60;
 
-    row = grid.rows.add();
-    row.cells[0].value = '3';
-    row.cells[1].value = 'FILTER CABIN';
-    // row.cells[1].columnSpan = 2;
-    try {
-      row.cells[2].value =
-          PdfBitmap(await _readLclStrgImageData(filterCabinImg!.path));
-      row.cells[2].style = PdfGridCellStyle(
-          cellPadding: PdfPaddings(bottom: 0, left: 0, right: 0, top: 0));
-    } catch (e) {
-      log(e.toString());
-    }
-    row.cells[3].value = filterCabinRemarkController.text;
-    row.height = 60;
+    // row = grid.rows.add();
+    // row.cells[0].value = '3';
+    // row.cells[1].value = 'FILTER CABIN';
+    // // row.cells[1].columnSpan = 2;
+    // try {
+    //   row.cells[2].value =
+    //       PdfBitmap(await _readLclStrgImageData(filterCabinImg!.path));
+    //   row.cells[2].style = PdfGridCellStyle(
+    //       cellPadding: PdfPaddings(bottom: 0, left: 0, right: 0, top: 0));
+    // } catch (e) {
+    //   log(e.toString());
+    // }
+    // row.cells[3].value = filterCabinRemarkController.text;
+    // row.height = 60;
 
     grid.columns[0].width = 15;
     grid.columns[1].width = 170;
@@ -582,7 +604,7 @@ class _PreInsWidgetState extends State<PreInsWidget> {
   List<String> outputPerawatanRemark = [];
 
   List<String> outputPergantianRemark = [];
-
+  late List<Diagnosis> diagnosiss;
   Widget diagnosisFields() {
     return Container(
       child: Column(
@@ -643,10 +665,19 @@ class _PreInsWidgetState extends State<PreInsWidget> {
                 style: TextStyle(color: ColorConstant.colorPrimary),
               ),
               onPressed: () {
-                getImageDiagnosis(ImageSource.camera);
+                getImages(ImageSource.camera);
               },
             ),
           ),
+          SizedBox(height: 8.0),
+          image != null
+              ? Image.file(
+                  File(image!.path),
+                  height: 100,
+                  width: 100,
+                  fit: BoxFit.cover,
+                )
+              : Container(),
           Spacer(),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -672,23 +703,6 @@ class _PreInsWidgetState extends State<PreInsWidget> {
                     style: TextStyle(color: ColorConstant.colorWhite),
                   ),
                   onPressed: () async {
-                    // String? fileName = _selectFile?.path.split('/').last;
-                    // FormData formData = FormData.fromMap({
-                    //   'photo': await MultipartFile.fromFile(
-                    //     _selectFile!.path,
-                    //     filename: fileName,
-                    //   ),
-                    //   'tiang_id': atpDetailProvider.tiangId,
-                    //   'photo_type': atpDetailProvider.namaTiang,
-                    // });
-                    // uploadTiangResult = await atpDetailProvider.uploadTiang(
-                    //   formData,
-                    // );
-                    // if (uploadTiangResult) {
-                    //   Navigator.of(context).pop();
-                    // } else {
-                    //   myToast.showToast(context, 'Failed!');
-                    // }
                     Diagnosis diagnosis = Diagnosis(
                         title: diagnosisController.text,
                         remark: remarkDiagnosisController.text,
@@ -697,6 +711,12 @@ class _PreInsWidgetState extends State<PreInsWidget> {
                     await DiagnosisDatabaseProvider.db
                         .addItemToDatabase(diagnosis);
                     Navigator.of(context).pop();
+                    DiagnosisDatabaseProvider.db.getAllDiagnosis();
+                    setState(() {
+                      diagnosisController.text = '';
+                      remarkDiagnosisController.text = '';
+                      _selectFile = null;
+                    });
                   },
                 ),
               ),
@@ -708,12 +728,13 @@ class _PreInsWidgetState extends State<PreInsWidget> {
   }
 
   var _selectFile;
-
-  getImageDiagnosis(ImageSource source) async {
-    // ignore: invalid_use_of_visible_for_testing_member
-    _selectFile = await ImagePicker.platform.getImage(source: source);
-
-    print('getImageDiagnosis: ${Path.basename(_selectFile!.path)}');
+  var image;
+  final ImagePicker _imagePicker = ImagePicker();
+  void getImages(ImageSource camera) async {
+    image = await _imagePicker.pickImage(source: camera, imageQuality: 50);
+    setState(() {
+      _selectFile = File(image!.path);
+    });
   }
 
   @override
@@ -1054,60 +1075,88 @@ class _PreInsWidgetState extends State<PreInsWidget> {
                         // SizedBox(
                         //   height: 8.0,
                         // ),
+                        FutureBuilder<List<Diagnosis>>(
+                            future:
+                                DiagnosisDatabaseProvider.db.getAllDiagnosis(),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<List<Diagnosis>> snapshot) {
+                              if (snapshot.hasData) {
+                                return Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: SizedBox(
+                                    height: 200,
+                                    child: ListView.builder(
+                                        physics: BouncingScrollPhysics(),
+                                        itemCount: snapshot.data!.length,
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          Diagnosis diagnosis =
+                                              snapshot.data![index];
+                                          diagnosiss = snapshot.data!;
+                                          return Card(
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    height: 100,
+                                                    width: 100,
+                                                    child: Utility
+                                                        .imageFromBase64String(
+                                                            diagnosis.img),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 8.0,
+                                                  ),
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    children: [
+                                                      Text(
+                                                        diagnosis.title
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 10.0,
+                                                      ),
+                                                      Text(
+                                                        diagnosis.remark
+                                                            .toString(),
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                      ),
+                                                      SizedBox(
+                                                        height: 10.0,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                        }),
+                                  ),
+                                );
+                              } else {
+                                return Center();
+                              }
+                            }),
                       ],
                     ),
                   )),
               SizedBox(
                 height: 8.0,
               ),
-              FutureBuilder<List<Diagnosis>>(
-                  future: DiagnosisDatabaseProvider.db.getAllDiagnosis(),
-                  builder: (BuildContext context,
-                      AsyncSnapshot<List<Diagnosis>> snapshot) {
-                    if (snapshot.hasData) {
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Expanded(
-                          child: SizedBox(
-                            height: 200,
-                            child: ListView.builder(
-                                itemCount: snapshot.data!.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  Diagnosis diagnosis = snapshot.data![index];
-                                  return Card(
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Container(
-                                          height: 100,
-                                          width: 100,
-                                          child: Utility.imageFromBase64String(
-                                              diagnosis.img),
-                                        ),
-                                        Column(
-                                          children: [
-                                            Text(diagnosis.title.toString()),
-                                            SizedBox(
-                                              height: 10.0,
-                                            ),
-                                            Text(diagnosis.remark.toString()),
-                                            SizedBox(
-                                              height: 10.0,
-                                            ),
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  );
-                                }),
-                          ),
-                        ),
-                      );
-                    } else {
-                      return Center();
-                    }
-                  }),
               SizedBox(
                 height: 8.0,
               ),
@@ -1122,7 +1171,7 @@ class _PreInsWidgetState extends State<PreInsWidget> {
                       color: ColorConstant.colorPrimary,
                       child: MaterialButton(
                         onPressed: () {
-                          validation();
+                          // validation();
                           _createPDF();
                         },
                         child: Padding(

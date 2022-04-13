@@ -53,6 +53,11 @@ class DiagnosisDatabaseProvider {
     final db = await database;
     var response = await db!.query('Diagnosis');
     List<Diagnosis> list = response.map((e) => Diagnosis.fromMap(e)).toList();
+    for (var item in list) {
+      print('getAllDiagnosis: ${item.remark}');
+    }
+    print('getAllDiagnosis: ${list.length}');
+
     return list;
   }
 
