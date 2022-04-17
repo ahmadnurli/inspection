@@ -35,14 +35,14 @@ enum TypeImages {
   resultAccu
 }
 
-class PreInsWidget extends StatefulWidget {
-  const PreInsWidget({Key? key}) : super(key: key);
+class PostInsWidget extends StatefulWidget {
+  const PostInsWidget({Key? key}) : super(key: key);
 
   @override
-  State<PreInsWidget> createState() => _PreInsWidgetState();
+  State<PostInsWidget> createState() => _PostInsWidgetState();
 }
 
-class _PreInsWidgetState extends State<PreInsWidget> {
+class _PostInsWidgetState extends State<PostInsWidget> {
   TextEditingController dateController = TextEditingController();
   TextEditingController noWoController = TextEditingController();
   TextEditingController platNomorController = TextEditingController();
@@ -188,7 +188,7 @@ class _PreInsWidgetState extends State<PreInsWidget> {
     preGrid.headers.add(1);
 
     PdfGridRow preHeader = preGrid.headers[0];
-    preHeader.cells[0].value = 'PRE-INSPECTION CHECK LIST';
+    preHeader.cells[0].value = 'POST-INSPECTION CHECK LIST';
     preHeader.cells[0].columnSpan = 7;
     preHeader.cells[0].style = PdfGridCellStyle(
       font: PdfStandardFont(PdfFontFamily.helvetica, 20),
@@ -303,7 +303,7 @@ class _PreInsWidgetState extends State<PreInsWidget> {
     header.cells[1].value = 'Decription';
     // header.cells[1].columnSpan = 2;
     // header.cells[2].value = '';
-    header.cells[2].value = 'Pre-Inspection';
+    header.cells[2].value = 'Post-Inspection';
     header.cells[3].value = 'Remark';
     grid.headers[0].cells[0].style = gridStyle;
     grid.headers[0].cells[1].style = gridStyle;
@@ -609,12 +609,10 @@ class _PreInsWidgetState extends State<PreInsWidget> {
 
   var _selectFile;
   var image;
-  var resultImage;
   final ImagePicker _imagePicker = ImagePicker();
   void getImages(ImageSource camera) async {
     image = await _imagePicker.pickImage(source: camera, imageQuality: 50);
     setState(() {
-      resultImage = image;
       _selectFile = File(image!.path);
     });
   }

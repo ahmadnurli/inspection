@@ -4,11 +4,11 @@ import 'dart:io';
 
 import 'package:floating_action_bubble/floating_action_bubble.dart';
 import 'package:flutter/material.dart';
-import 'package:inspection/sejuk/constants/color_constant.dart';
+import 'package:inspection/catur/constants/color_constant.dart';
 import 'package:inspection/helpers/toast.dart';
-import 'package:inspection/sejuk/post_ins/screens/screens.dart';
-import 'package:inspection/sejuk/pre_ins/screens/screens.dart';
-import 'package:inspection/sejuk/report/widgets/widgets.dart';
+import 'package:inspection/catur/post_ins/screens/screens.dart';
+import 'package:inspection/catur/pre_ins/screens/screens.dart';
+import 'package:inspection/catur/report/widgets/widgets.dart';
 import 'package:path_provider/path_provider.dart';
 
 class HomeScreen extends StatefulWidget {

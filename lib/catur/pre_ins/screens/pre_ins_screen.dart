@@ -1,19 +1,21 @@
-import 'package:flutter/material.dart';
-import 'package:inspection/sejuk/past_ins/widgets/widgets.dart';
+// ignore_for_file: prefer_const_constructors
 
-class PastInsScreen extends StatefulWidget {
-  const PastInsScreen({Key? key}) : super(key: key);
+import 'package:flutter/material.dart';
+import 'package:inspection/catur/pre_ins/widgets/widgets.dart';
+
+class PreInsScreen extends StatefulWidget {
+  const PreInsScreen({Key? key}) : super(key: key);
 
   @override
-  State<PastInsScreen> createState() => _PastInsScreenState();
+  State<PreInsScreen> createState() => _PreInsScreenState();
 }
 
-class _PastInsScreenState extends State<PastInsScreen> {
+class _PreInsScreenState extends State<PreInsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Post-Inspection'),
+        title: Text('Pre-Inspection'),
         actions: [
           GestureDetector(
               onTap: () {
@@ -36,9 +38,9 @@ class _PastInsScreenState extends State<PastInsScreen> {
         //   image: AssetImage('assets/icon/icon.png'),
         //   fit: BoxFit.fitWidth,
         // )),
-        child: const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: PastInsWidget(),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(child: PreInsWidget()),
         ),
       ),
     );

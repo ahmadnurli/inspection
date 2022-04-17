@@ -10,9 +10,9 @@ import 'package:flutter/scheduler.dart';
 import 'package:inspection/helpers/db.dart';
 import 'package:inspection/helpers/diagnosis_model.dart';
 import 'package:inspection/helpers/helpers.dart';
-import 'package:inspection/sejuk/constants/constants.dart';
+import 'package:inspection/catur/constants/constants.dart';
 import 'package:inspection/helpers/toast.dart';
-import 'package:inspection/sejuk/input_remark/screens/input_remark_screen.dart';
+import 'package:inspection/catur/input_remark/screens/input_remark_screen.dart';
 import 'package:inspection/mobile.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:open_file/open_file.dart';
@@ -166,22 +166,25 @@ class _PreInsWidgetState extends State<PreInsWidget> {
     final page = document.pages.add();
 
     page.graphics.drawImage(
-        PdfBitmap(await _readImageData('assets/logo_sejuk_lama.jpeg')),
+        PdfBitmap(await _readImageData('assets/logo_catur.jpg')),
         Rect.fromLTWH(0, 0, 80, 80));
 
-    page.graphics.drawString('PT. Sejuk Mandiri Jaya (sejuk ac)',
-        PdfStandardFont(PdfFontFamily.helvetica, 17),
-        brush: PdfBrushes.blue, bounds: Rect.fromLTWH(160, 10, 0, 0));
     page.graphics.drawString(
-        'Jl. Joglo Raya No.48, RT.7/RW.8, Joglo, Kec. Kembangan, Kota Jakarta Barat,',
-        PdfStandardFont(PdfFontFamily.helvetica, 12),
-        bounds: Rect.fromLTWH(85, 33, 0, 0));
-    page.graphics.drawString('Daerah Khusus Ibukota Jakarta 11640',
-        PdfStandardFont(PdfFontFamily.helvetica, 12),
-        bounds: Rect.fromLTWH(180, 50, 0, 0));
+        'CATUR MANUNGGAL JM', PdfStandardFont(PdfFontFamily.helvetica, 17),
+        brush: PdfBrushes.dodgerBlue, bounds: Rect.fromLTWH(190, 10, 0, 0));
+    page.graphics.drawString('BENGKEL PERBAIKAN & PERAWATAN',
+        PdfStandardFont(PdfFontFamily.helvetica, 14),
+        brush: PdfBrushes.black, bounds: Rect.fromLTWH(160, 30, 0, 0));
     page.graphics.drawString(
-        'Telpon: 021-58907848', PdfStandardFont(PdfFontFamily.helvetica, 12),
-        bounds: Rect.fromLTWH(220, 65, 0, 0));
+        'Jl. Raya Kebayoran Lama No. 1 Kebon Jeruk Jakarta Barat 11560,',
+        PdfStandardFont(PdfFontFamily.helvetica, 12),
+        bounds: Rect.fromLTWH(110, 43, 0, 0));
+    // page.graphics.drawString('Daerah Khusus Ibukota Jakarta 11640',
+    //     PdfStandardFont(PdfFontFamily.helvetica, 12),
+    //     bounds: Rect.fromLTWH(180, 60, 0, 0));
+    page.graphics.drawString('Tlp: (021) 536 55431, Fax: (021) 536 55320',
+        PdfStandardFont(PdfFontFamily.helvetica, 12),
+        bounds: Rect.fromLTWH(175, 60, 0, 0));
     //pre-inspection check list
     PdfGrid preGrid = PdfGrid();
     preGrid.columns.add(count: 7);
@@ -489,7 +492,7 @@ class _PreInsWidgetState extends State<PreInsWidget> {
   List<String> outputPerawatanRemark = [];
 
   List<String> outputPergantianRemark = [];
-  List<Diagnosis> diagnosiss = [];
+  late List<Diagnosis> diagnosiss;
   Widget diagnosisFields() {
     return ListView(
       children: [
