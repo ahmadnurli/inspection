@@ -4,8 +4,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:inspection/catur/splashscreen/screens/splashscreen_screen.dart';
 import 'package:inspection/sejuk/constants/color_constant.dart';
+import 'package:inspection/sejuk/splashscreen/screens/splashscreen_screen.dart';
 
 void main() {
   runApp(const MyApp());

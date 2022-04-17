@@ -98,16 +98,16 @@ class _HomeScreenState extends State<HomeScreen>
           title: Text('Inspection'),
         ),
         body: Container(
-          color: ColorConstant.colorWhite,
+          color: ColorConstant.grey,
           child: Stack(
             children: [
               Center(
                 child: Container(
-                  height: 150,
-                  width: 150,
+                  height: 300,
+                  width: 300,
                   decoration: BoxDecoration(
                       image: DecorationImage(
-                    image: AssetImage('assets/logo_catur.jpg'),
+                    image: AssetImage('assets/logo_sejuk_lama.jpeg'),
                     fit: BoxFit.fitWidth,
                   )),
                 ),
