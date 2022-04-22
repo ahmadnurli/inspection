@@ -5,10 +5,10 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
-class DiagnosisDatabaseProvider {
-  DiagnosisDatabaseProvider._();
+class PreDiagnosisDatabaseProvider {
+  PreDiagnosisDatabaseProvider._();
 
-  static final DiagnosisDatabaseProvider db = DiagnosisDatabaseProvider._();
+  static final PreDiagnosisDatabaseProvider db = PreDiagnosisDatabaseProvider._();
   Database? _database;
 
   Future<Database?> get database async {

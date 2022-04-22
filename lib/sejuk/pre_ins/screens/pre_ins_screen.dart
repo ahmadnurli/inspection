@@ -19,6 +19,7 @@ class _PreInsScreenState extends State<PreInsScreen> {
         actions: [
           GestureDetector(
               onTap: () {
+                // setState(() {});
                 Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(

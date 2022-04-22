@@ -7,7 +7,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:inspection/helpers/db.dart';
+import 'package:inspection/helpers/pre_diagnosis_db.dart';
 import 'package:inspection/helpers/diagnosis_model.dart';
 import 'package:inspection/helpers/helpers.dart';
 import 'package:inspection/sejuk/constants/constants.dart';
@@ -15,6 +15,7 @@ import 'package:inspection/helpers/toast.dart';
 import 'package:inspection/sejuk/input_remark/screens/input_remark_screen.dart';
 import 'package:inspection/mobile.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:inspection/sejuk/pre_ins/screens/input_diagnosis_screen.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
@@ -82,8 +83,9 @@ class _PreInsWidgetState extends State<PreInsWidget> {
   void initState() {
     pr = ProgressDialog(context);
     pr.style(message: 'Mohon tunggu...');
-    // DiagnosisDatabaseProvider.db.getAllDiagnosis();
-    DiagnosisDatabaseProvider.db.deleteAllItems();
+    // DiagnosisDatabaseProvider.db.deleteAllItems();
+
+    PreDiagnosisDatabaseProvider.db.getAllDiagnosis();
   }
 
   getImage(ImageSource source, TypeImages typeImg) async {
@@ -560,7 +562,7 @@ class _PreInsWidgetState extends State<PreInsWidget> {
                 fit: BoxFit.cover,
               )
             : Container(),
-        Spacer(),
+        // Spacer(),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -589,10 +591,10 @@ class _PreInsWidgetState extends State<PreInsWidget> {
                       title: diagnosisController.text,
                       remark: remarkDiagnosisController.text,
                       img: Utility.base64String(_selectFile.readAsBytesSync()));
-                  await DiagnosisDatabaseProvider.db
+                  await PreDiagnosisDatabaseProvider.db
                       .addItemToDatabase(diagnosis);
                   Navigator.of(context).pop();
-                  DiagnosisDatabaseProvider.db.getAllDiagnosis();
+                  PreDiagnosisDatabaseProvider.db.getAllDiagnosis();
                   setState(() {
                     diagnosisController.text = '';
                     remarkDiagnosisController.text = '';
@@ -608,10 +610,10 @@ class _PreInsWidgetState extends State<PreInsWidget> {
   }
 
   var _selectFile;
-  var image;
+  XFile? image;
   var resultImage;
   final ImagePicker _imagePicker = ImagePicker();
-  void getImages(ImageSource camera) async {
+  getImages(ImageSource camera) async {
     image = await _imagePicker.pickImage(source: camera, imageQuality: 50);
     setState(() {
       resultImage = image;
@@ -621,468 +623,492 @@ class _PreInsWidgetState extends State<PreInsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          // Text('Pre - Inspection Check List'),
-          SizedBox(
-            height: 8.0,
-          ),
-          Column(
-            children: [
-              Container(
-                padding: EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                  color: ColorConstant.colorGrey.withOpacity(0.7),
-                  border: Border.all(
-                      color: ColorConstant.colorBoldPrimary, width: 3.0),
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: Column(
-                  children: [
-                    TextFormField(
-                      onTap: () {
-                        pickStartDateTime(context);
-                      },
-                      controller: dateController,
-                      textInputAction: TextInputAction.next,
-                      focusNode: dateFocus,
-                      onFieldSubmitted: (term) {
-                        fieldFocusChange(context, dateFocus, noWoFocus);
-                      },
-                      obscureText: false,
-                      style: const TextStyle(
-                          fontFamily: 'Montserrat', fontSize: 16.0),
-                      decoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: ColorConstant.colorPrimary),
-                              borderRadius: BorderRadius.circular(10.0)),
-                          disabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  color: ColorConstant.colorPrimary),
-                              borderRadius: BorderRadius.circular(10.0)),
-                          labelText: 'Hari/Tanggal',
-                          labelStyle: const TextStyle(
-                              color: ColorConstant.colorPrimary),
-                          contentPadding:
-                              const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                          // hintText: "Email",
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0))),
-                    ),
-                    SizedBox(
-                      height: 8.0,
-                    ),
-                    TextFormField(
-                      controller: noWoController,
-                      textInputAction: TextInputAction.next,
-                      focusNode: noWoFocus,
-                      onFieldSubmitted: (term) {
-                        fieldFocusChange(context, noWoFocus, platNomorFocus);
-                      },
-                      obscureText: false,
-                      style: const TextStyle(
-                          fontFamily: 'Montserrat', fontSize: 16.0),
-                      decoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: ColorConstant.colorPrimary),
-                              borderRadius: BorderRadius.circular(10.0)),
-                          disabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  color: ColorConstant.colorPrimary),
-                              borderRadius: BorderRadius.circular(10.0)),
-                          labelText: 'No. Work Order',
-                          labelStyle: const TextStyle(
-                              color: ColorConstant.colorPrimary),
-                          contentPadding:
-                              const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                          // hintText: "Email",
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0))),
-                    ),
-                    SizedBox(
-                      height: 8.0,
-                    ),
-                    TextFormField(
-                      controller: platNomorController,
-                      textInputAction: TextInputAction.next,
-                      focusNode: platNomorFocus,
-                      onFieldSubmitted: (term) {
-                        fieldFocusChange(
-                            context, platNomorFocus, typeKendaraanFocus);
-                      },
-                      obscureText: false,
-                      style: const TextStyle(
-                          fontFamily: 'Montserrat', fontSize: 16.0),
-                      decoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: ColorConstant.colorPrimary),
-                              borderRadius: BorderRadius.circular(10.0)),
-                          disabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  color: ColorConstant.colorPrimary),
-                              borderRadius: BorderRadius.circular(10.0)),
-                          labelText: 'Plat Nomor',
-                          labelStyle: const TextStyle(
-                              color: ColorConstant.colorPrimary),
-                          contentPadding:
-                              const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                          // hintText: "Email",
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0))),
-                    ),
-                    SizedBox(
-                      height: 8.0,
-                    ),
-                    TextFormField(
-                      controller: typeKendaraanController,
-                      textInputAction: TextInputAction.next,
-                      focusNode: typeKendaraanFocus,
-                      onFieldSubmitted: (term) {
-                        fieldFocusChange(
-                            context, typeKendaraanFocus, teknisiFocus);
-                      },
-                      obscureText: false,
-                      style: const TextStyle(
-                          fontFamily: 'Montserrat', fontSize: 16.0),
-                      decoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: ColorConstant.colorPrimary),
-                              borderRadius: BorderRadius.circular(10.0)),
-                          disabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  color: ColorConstant.colorPrimary),
-                              borderRadius: BorderRadius.circular(10.0)),
-                          labelText: 'Type Kendaraan',
-                          labelStyle: const TextStyle(
-                              color: ColorConstant.colorPrimary),
-                          contentPadding:
-                              const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                          // hintText: "Email",
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0))),
-                    ),
-                    SizedBox(
-                      height: 8.0,
-                    ),
-                    TextFormField(
-                      controller: teknisiController,
-                      textInputAction: TextInputAction.next,
-                      focusNode: teknisiFocus,
-                      obscureText: false,
-                      style: const TextStyle(
-                          fontFamily: 'Montserrat', fontSize: 16.0),
-                      decoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: ColorConstant.colorPrimary),
-                              borderRadius: BorderRadius.circular(10.0)),
-                          disabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  color: ColorConstant.colorPrimary),
-                              borderRadius: BorderRadius.circular(10.0)),
-                          labelText: 'Teknisi',
-                          labelStyle: const TextStyle(
-                              color: ColorConstant.colorPrimary),
-                          contentPadding:
-                              const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                          // hintText: "Email",
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0))),
-                    ),
-                    SizedBox(
-                      height: 8.0,
-                    ),
-                    Text('Kilo Meter (KM)'),
-                    SizedBox(
-                      height: 8.0,
-                    ),
-                    InkWell(
-                      onTap: () {
-                        getImage(ImageSource.camera, TypeImages.km);
-                      },
-                      child: kmImg != null
-                          ? Image.file(
-                              File(kmImg!.path),
-                              height: 200,
-                              width: 200,
-                              fit: BoxFit.cover,
-                            )
-                          : Image.asset(
-                              'assets/image_camera.jpg',
-                              height: 200,
-                              width: 200,
-                            ),
-                    ),
-                    SizedBox(
-                      height: 8.0,
-                    ),
-                    Text('Kendaraan Tampak Depan'),
-                    SizedBox(
-                      height: 8.0,
-                    ),
-                    InkWell(
-                      onTap: () {
-                        getImage(ImageSource.camera, TypeImages.tampakDepan);
-                      },
-                      child: tampakDepanImg != null
-                          ? Image.file(
-                              File(tampakDepanImg!.path),
-                              height: 200,
-                              width: 200,
-                              fit: BoxFit.cover,
-                            )
-                          : Image.asset(
-                              'assets/image_camera.jpg',
-                              height: 200,
-                              width: 200,
-                            ),
-                    ),
-                    SizedBox(
-                      height: 8.0,
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 8.0,
-              ),
-              Container(
+    PreDiagnosisDatabaseProvider.db.getAllDiagnosis();
+
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            // Text('Pre - Inspection Check List'),
+            SizedBox(
+              height: 8.0,
+            ),
+            Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.all(8.0),
                   decoration: BoxDecoration(
                     color: ColorConstant.colorGrey.withOpacity(0.7),
                     border: Border.all(
-                      color: ColorConstant.colorRed,
-                      width: 3.0,
-                    ),
+                        color: ColorConstant.colorBoldPrimary, width: 3.0),
                     borderRadius: BorderRadius.circular(10.0),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('Diagnosis'),
-                            InkWell(
-                              onTap: () async {
-                                await showPlatformDialog(
-                                    context: context,
-                                    builder: (_) => BasicDialogAlert(
-                                          title: Text('Add Diagnosis'),
-                                          content: diagnosisFields(),
-                                        ));
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Icon(Icons.add),
-                              ),
-                            ),
-                          ],
-                        ),
-                        // SizedBox(
-                        //   height: 8.0,
-                        // ),
-                        // Text('Kisi-kisi Blower'),
-                        // SizedBox(
-                        //   height: 8.0,
-                        // ),
-                        // Row(
-                        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        //   children: [
-                        //     Expanded(
-                        //       child: Padding(
-                        //         padding: const EdgeInsets.only(right: 8.0),
-                        //         child: InkWell(
-                        //           onTap: () {
-                        //             getImage(ImageSource.camera,
-                        //                 TypeImages.kisiBlower);
-                        //           },
-                        //           child: kisiBlowerImg != null
-                        //               ? Image.file(
-                        //                   File(kisiBlowerImg!.path),
-                        //                   height: 100,
-                        //                   width: 100,
-                        //                   fit: BoxFit.cover,
-                        //                 )
-                        //               : Image.asset(
-                        //                   'assets/image_camera.jpg',
-                        //                   height: 100,
-                        //                   width: 100,
-                        //                 ),
-                        //         ),
-                        //       ),
-                        //     ),
-                        //     Expanded(
-                        //       child: Container(
-                        //         height: 100,
-                        //         child: TextFormField(
-                        //           maxLines: 5,
-                        //           controller: kisiRemarkController,
-                        //           textInputAction: TextInputAction.next,
-                        //           obscureText: false,
-                        //           style: const TextStyle(
-                        //               fontFamily: 'Montserrat', fontSize: 16.0),
-                        //           decoration: InputDecoration(
-                        //               enabledBorder: OutlineInputBorder(
-                        //                   borderSide: BorderSide(
-                        //                       color:
-                        //                           ColorConstant.colorPrimary),
-                        //                   borderRadius:
-                        //                       BorderRadius.circular(10.0)),
-                        //               disabledBorder: OutlineInputBorder(
-                        //                   borderSide: const BorderSide(
-                        //                       color:
-                        //                           ColorConstant.colorPrimary),
-                        //                   borderRadius:
-                        //                       BorderRadius.circular(10.0)),
-                        //               labelText: 'Remark',
-                        //               labelStyle: const TextStyle(
-                        //                   color: ColorConstant.colorPrimary),
-                        //               contentPadding: const EdgeInsets.fromLTRB(
-                        //                   20.0, 15.0, 20.0, 15.0),
-                        //               // hintText: "Email",
-                        //               border: OutlineInputBorder(
-                        //                   borderRadius:
-                        //                       BorderRadius.circular(10.0))),
-                        //         ),
-                        //       ),
-                        //     ),
-                        //   ],
-                        // ),
-                        // SizedBox(
-                        //   height: 8.0,
-                        // ),
-                        FutureBuilder<List<Diagnosis>>(
-                            future:
-                                DiagnosisDatabaseProvider.db.getAllDiagnosis(),
-                            builder: (BuildContext context,
-                                AsyncSnapshot<List<Diagnosis>> snapshot) {
-                              if (snapshot.hasData) {
-                                return Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: SizedBox(
-                                    height: 200,
-                                    child: ListView.builder(
-                                        physics: BouncingScrollPhysics(),
-                                        itemCount: snapshot.data!.length,
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          Diagnosis diagnosis =
-                                              snapshot.data![index];
-                                          diagnosiss = snapshot.data!;
-                                          return Card(
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: [
-                                                  Container(
-                                                    height: 100,
-                                                    width: 100,
-                                                    child: Utility
-                                                        .imageFromBase64String(
-                                                            diagnosis.img),
-                                                  ),
-                                                  SizedBox(
-                                                    width: 8.0,
-                                                  ),
-                                                  Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    children: [
-                                                      Text(
-                                                        diagnosis.title
-                                                            .toString(),
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 10.0,
-                                                      ),
-                                                      Text(
-                                                        diagnosis.remark
-                                                            .toString(),
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                      ),
-                                                      SizedBox(
-                                                        height: 10.0,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          );
-                                        }),
-                                  ),
-                                );
-                              } else {
-                                return Center();
-                              }
-                            }),
-                      ],
-                    ),
-                  )),
-              SizedBox(
-                height: 8.0,
-              ),
-              SizedBox(
-                height: 8.0,
-              ),
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.fromLTRB(0, 8.0, 0, 8.0),
-                child: Column(
-                  children: [
-                    Material(
-                      elevation: 5.0,
-                      borderRadius: BorderRadius.circular(10.0),
-                      color: ColorConstant.colorPrimary,
-                      child: MaterialButton(
-                        onPressed: () {
-                          validation();
-                          // _createPDF();
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        onTap: () {
+                          pickStartDateTime(context);
                         },
-                        child: Padding(
-                          padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                          child: Row(
+                        controller: dateController,
+                        textInputAction: TextInputAction.next,
+                        focusNode: dateFocus,
+                        onFieldSubmitted: (term) {
+                          fieldFocusChange(context, dateFocus, noWoFocus);
+                        },
+                        obscureText: false,
+                        style: const TextStyle(
+                            fontFamily: 'Montserrat', fontSize: 16.0),
+                        decoration: InputDecoration(
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: ColorConstant.colorPrimary),
+                                borderRadius: BorderRadius.circular(10.0)),
+                            disabledBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                    color: ColorConstant.colorPrimary),
+                                borderRadius: BorderRadius.circular(10.0)),
+                            labelText: 'Hari/Tanggal',
+                            labelStyle: const TextStyle(
+                                color: ColorConstant.colorPrimary),
+                            contentPadding: const EdgeInsets.fromLTRB(
+                                20.0, 15.0, 20.0, 15.0),
+                            // hintText: "Email",
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0))),
+                      ),
+                      SizedBox(
+                        height: 8.0,
+                      ),
+                      TextFormField(
+                        controller: noWoController,
+                        textInputAction: TextInputAction.next,
+                        focusNode: noWoFocus,
+                        onFieldSubmitted: (term) {
+                          fieldFocusChange(context, noWoFocus, platNomorFocus);
+                        },
+                        obscureText: false,
+                        style: const TextStyle(
+                            fontFamily: 'Montserrat', fontSize: 16.0),
+                        decoration: InputDecoration(
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: ColorConstant.colorPrimary),
+                                borderRadius: BorderRadius.circular(10.0)),
+                            disabledBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                    color: ColorConstant.colorPrimary),
+                                borderRadius: BorderRadius.circular(10.0)),
+                            labelText: 'No. Work Order',
+                            labelStyle: const TextStyle(
+                                color: ColorConstant.colorPrimary),
+                            contentPadding: const EdgeInsets.fromLTRB(
+                                20.0, 15.0, 20.0, 15.0),
+                            // hintText: "Email",
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0))),
+                      ),
+                      SizedBox(
+                        height: 8.0,
+                      ),
+                      TextFormField(
+                        controller: platNomorController,
+                        textInputAction: TextInputAction.next,
+                        focusNode: platNomorFocus,
+                        onFieldSubmitted: (term) {
+                          fieldFocusChange(
+                              context, platNomorFocus, typeKendaraanFocus);
+                        },
+                        obscureText: false,
+                        style: const TextStyle(
+                            fontFamily: 'Montserrat', fontSize: 16.0),
+                        decoration: InputDecoration(
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: ColorConstant.colorPrimary),
+                                borderRadius: BorderRadius.circular(10.0)),
+                            disabledBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                    color: ColorConstant.colorPrimary),
+                                borderRadius: BorderRadius.circular(10.0)),
+                            labelText: 'Plat Nomor',
+                            labelStyle: const TextStyle(
+                                color: ColorConstant.colorPrimary),
+                            contentPadding: const EdgeInsets.fromLTRB(
+                                20.0, 15.0, 20.0, 15.0),
+                            // hintText: "Email",
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0))),
+                      ),
+                      SizedBox(
+                        height: 8.0,
+                      ),
+                      TextFormField(
+                        controller: typeKendaraanController,
+                        textInputAction: TextInputAction.next,
+                        focusNode: typeKendaraanFocus,
+                        onFieldSubmitted: (term) {
+                          fieldFocusChange(
+                              context, typeKendaraanFocus, teknisiFocus);
+                        },
+                        obscureText: false,
+                        style: const TextStyle(
+                            fontFamily: 'Montserrat', fontSize: 16.0),
+                        decoration: InputDecoration(
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: ColorConstant.colorPrimary),
+                                borderRadius: BorderRadius.circular(10.0)),
+                            disabledBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                    color: ColorConstant.colorPrimary),
+                                borderRadius: BorderRadius.circular(10.0)),
+                            labelText: 'Type Kendaraan',
+                            labelStyle: const TextStyle(
+                                color: ColorConstant.colorPrimary),
+                            contentPadding: const EdgeInsets.fromLTRB(
+                                20.0, 15.0, 20.0, 15.0),
+                            // hintText: "Email",
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0))),
+                      ),
+                      SizedBox(
+                        height: 8.0,
+                      ),
+                      TextFormField(
+                        controller: teknisiController,
+                        textInputAction: TextInputAction.next,
+                        focusNode: teknisiFocus,
+                        obscureText: false,
+                        style: const TextStyle(
+                            fontFamily: 'Montserrat', fontSize: 16.0),
+                        decoration: InputDecoration(
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: ColorConstant.colorPrimary),
+                                borderRadius: BorderRadius.circular(10.0)),
+                            disabledBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                    color: ColorConstant.colorPrimary),
+                                borderRadius: BorderRadius.circular(10.0)),
+                            labelText: 'Teknisi',
+                            labelStyle: const TextStyle(
+                                color: ColorConstant.colorPrimary),
+                            contentPadding: const EdgeInsets.fromLTRB(
+                                20.0, 15.0, 20.0, 15.0),
+                            // hintText: "Email",
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0))),
+                      ),
+                      SizedBox(
+                        height: 8.0,
+                      ),
+                      Text('Kilo Meter (KM)'),
+                      SizedBox(
+                        height: 8.0,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          getImage(ImageSource.camera, TypeImages.km);
+                        },
+                        child: kmImg != null
+                            ? Image.file(
+                                File(kmImg!.path),
+                                height: 200,
+                                width: 200,
+                                fit: BoxFit.cover,
+                              )
+                            : Image.asset(
+                                'assets/image_camera.jpg',
+                                height: 200,
+                                width: 200,
+                              ),
+                      ),
+                      SizedBox(
+                        height: 8.0,
+                      ),
+                      Text('Kendaraan Tampak Depan'),
+                      SizedBox(
+                        height: 8.0,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          getImage(ImageSource.camera, TypeImages.tampakDepan);
+                        },
+                        child: tampakDepanImg != null
+                            ? Image.file(
+                                File(tampakDepanImg!.path),
+                                height: 200,
+                                width: 200,
+                                fit: BoxFit.cover,
+                              )
+                            : Image.asset(
+                                'assets/image_camera.jpg',
+                                height: 200,
+                                width: 200,
+                              ),
+                      ),
+                      SizedBox(
+                        height: 8.0,
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 8.0,
+                ),
+                Container(
+                    decoration: BoxDecoration(
+                      color: ColorConstant.colorGrey.withOpacity(0.7),
+                      border: Border.all(
+                        color: ColorConstant.colorRed,
+                        width: 3.0,
+                      ),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: const [
-                              Text(
-                                'Generate',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.white,
+                            children: [
+                              Text('Diagnosis'),
+                              InkWell(
+                                onTap: () async {
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (_) {
+                                    return InputDiagnosisScreen();
+                                  }));
+                                  // await showPlatformDialog(
+                                  //     context: context,
+                                  //     builder: (_) => BasicDialogAlert(
+                                  //           title: Text('Add Diagnosis'),
+                                  //           content: diagnosisFields(),
+                                  //         ));
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Icon(Icons.add),
                                 ),
                               ),
-                              Icon(
-                                Icons.picture_as_pdf,
-                                color: Colors.white,
-                              )
                             ],
+                          ),
+                          // SizedBox(
+                          //   height: 8.0,
+                          // ),
+                          // Text('Kisi-kisi Blower'),
+                          // SizedBox(
+                          //   height: 8.0,
+                          // ),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //   children: [
+                          //     Expanded(
+                          //       child: Padding(
+                          //         padding: const EdgeInsets.only(right: 8.0),
+                          //         child: InkWell(
+                          //           onTap: () {
+                          //             getImage(ImageSource.camera,
+                          //                 TypeImages.kisiBlower);
+                          //           },
+                          //           child: kisiBlowerImg != null
+                          //               ? Image.file(
+                          //                   File(kisiBlowerImg!.path),
+                          //                   height: 100,
+                          //                   width: 100,
+                          //                   fit: BoxFit.cover,
+                          //                 )
+                          //               : Image.asset(
+                          //                   'assets/image_camera.jpg',
+                          //                   height: 100,
+                          //                   width: 100,
+                          //                 ),
+                          //         ),
+                          //       ),
+                          //     ),
+                          //     Expanded(
+                          //       child: Container(
+                          //         height: 100,
+                          //         child: TextFormField(
+                          //           maxLines: 5,
+                          //           controller: kisiRemarkController,
+                          //           textInputAction: TextInputAction.next,
+                          //           obscureText: false,
+                          //           style: const TextStyle(
+                          //               fontFamily: 'Montserrat', fontSize: 16.0),
+                          //           decoration: InputDecoration(
+                          //               enabledBorder: OutlineInputBorder(
+                          //                   borderSide: BorderSide(
+                          //                       color:
+                          //                           ColorConstant.colorPrimary),
+                          //                   borderRadius:
+                          //                       BorderRadius.circular(10.0)),
+                          //               disabledBorder: OutlineInputBorder(
+                          //                   borderSide: const BorderSide(
+                          //                       color:
+                          //                           ColorConstant.colorPrimary),
+                          //                   borderRadius:
+                          //                       BorderRadius.circular(10.0)),
+                          //               labelText: 'Remark',
+                          //               labelStyle: const TextStyle(
+                          //                   color: ColorConstant.colorPrimary),
+                          //               contentPadding: const EdgeInsets.fromLTRB(
+                          //                   20.0, 15.0, 20.0, 15.0),
+                          //               // hintText: "Email",
+                          //               border: OutlineInputBorder(
+                          //                   borderRadius:
+                          //                       BorderRadius.circular(10.0))),
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
+                          // SizedBox(
+                          //   height: 8.0,
+                          // ),
+                          FutureBuilder<List<Diagnosis>>(
+                              future: PreDiagnosisDatabaseProvider.db
+                                  .getAllDiagnosis(),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<List<Diagnosis>> snapshot) {
+                                if (snapshot.hasData) {
+                                  return Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: SizedBox(
+                                      height: 200,
+                                      child: ListView.builder(
+                                          physics: BouncingScrollPhysics(),
+                                          itemCount: snapshot.data!.length,
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
+                                            Diagnosis diagnosis =
+                                                snapshot.data![index];
+                                            diagnosiss = snapshot.data!;
+                                            return Card(
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: [
+                                                    Container(
+                                                      height: 100,
+                                                      width: 100,
+                                                      child: Utility
+                                                          .imageFromBase64String(
+                                                              diagnosis.img),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 8.0,
+                                                    ),
+                                                    Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          diagnosis.title
+                                                              .toString(),
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 10.0,
+                                                        ),
+                                                        Text(
+                                                          diagnosis.remark
+                                                              .toString(),
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                        ),
+                                                        SizedBox(
+                                                          height: 10.0,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Spacer(),
+                                                    InkWell(
+                                                        onTap: () async {
+                                                          await PreDiagnosisDatabaseProvider
+                                                              .db
+                                                              .deleteItemWithId(
+                                                                  diagnosis
+                                                                      .id!);
+                                                          setState(() {});
+                                                          await PreDiagnosisDatabaseProvider
+                                                              .db
+                                                              .getAllDiagnosis();
+                                                        },
+                                                        child:
+                                                            Icon(Icons.delete)),
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          }),
+                                    ),
+                                  );
+                                } else {
+                                  return Center();
+                                }
+                              }),
+                        ],
+                      ),
+                    )),
+                SizedBox(
+                  height: 8.0,
+                ),
+                SizedBox(
+                  height: 8.0,
+                ),
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.fromLTRB(0, 8.0, 0, 8.0),
+                  child: Column(
+                    children: [
+                      Material(
+                        elevation: 5.0,
+                        borderRadius: BorderRadius.circular(10.0),
+                        color: ColorConstant.colorPrimary,
+                        child: MaterialButton(
+                          onPressed: () {
+                            validation();
+                            // _createPDF();
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: const [
+                                Text(
+                                  'Generate',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.picture_as_pdf,
+                                  color: Colors.white,
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ),
-        ],
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
