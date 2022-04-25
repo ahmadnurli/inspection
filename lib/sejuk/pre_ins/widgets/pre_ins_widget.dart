@@ -130,36 +130,37 @@ class _PreInsWidgetState extends State<PreInsWidget> {
     } else if (diagnosiss.length == 0) {
       myToast.showToast(context, 'Data Diagnosis masing kosong!');
     } else {
-      setState(() {
-        outputPerawatanRemark = [];
-        outputPergantianRemark = [];
-      });
-      if (remarkPerawatanList.isNotEmpty) {
-        // remarkPerawatanList.sort((item1, item2) => item1.compareTo(item2));
-        for (int i = 0; i < remarkPerawatanList.reversed.length; i++) {
-          var act = remarkPerawatanList[i];
+      // setState(() {
+      //   outputPerawatanRemark = [];
+      //   outputPergantianRemark = [];
+      // });
+      // if (remarkPerawatanList.isNotEmpty) {
+      //   // remarkPerawatanList.sort((item1, item2) => item1.compareTo(item2));
+      //   for (int i = 0; i < remarkPerawatanList.reversed.length; i++) {
+      //     var act = remarkPerawatanList[i];
 
-          // if (activities[i].contains(',')) {
-          // }
-          // String res = act.replaceAll(',', '^');
-          print("replace: ${i + 1}. $act");
-          outputPerawatanRemark.insert(0, '${i + 1}. $act');
-        }
-      }
-      if (remarkPergantianList.isNotEmpty) {
-        // remarkPergantianList.sort((item1, item2) => item1.compareTo(item2));
-        for (int i = 0; i < remarkPergantianList.reversed.length; i++) {
-          var act = remarkPergantianList[i];
-          // if (activities[i].contains(',')) {
-          // }
-          // String res = act.replaceAll(',', '^');
-          print("replace: ${i + 1}. $act");
-          outputPergantianRemark.insert(0, '${i + 1}. $act');
-        }
-      }
-      pr.show();
+      //     // if (activities[i].contains(',')) {
+      //     // }
+      //     // String res = act.replaceAll(',', '^');
+      //     print("replace: ${i + 1}. $act");
+      //     outputPerawatanRemark.insert(0, '${i + 1}. $act');
+      //   }
+      // }
+      // if (remarkPergantianList.isNotEmpty) {
+      //   // remarkPergantianList.sort((item1, item2) => item1.compareTo(item2));
+      //   for (int i = 0; i < remarkPergantianList.reversed.length; i++) {
+      //     var act = remarkPergantianList[i];
+      //     // if (activities[i].contains(',')) {
+      //     // }
+      //     // String res = act.replaceAll(',', '^');
+      //     print("replace: ${i + 1}. $act");
+      //     outputPergantianRemark.insert(0, '${i + 1}. $act');
+      //   }
+      // }
+      // pr.show();
 
       _createPDF();
+      setState(() {});
     }
   }
 
@@ -345,10 +346,9 @@ class _PreInsWidgetState extends State<PreInsWidget> {
     List<int> bytes = document.save();
     document.dispose();
 
-    saveAndLaunchFile(bytes, '${noWoController.text}.pdf');
-    setState(() {
-      pr.hide();
-    });
+    await saveAndLaunchFile(bytes, '${noWoController.text}.pdf');
+    initEmptyFields();
+    setState(() {});
   }
 
   Future<void> saveAndLaunchFile(List<int> bytes, String fileName) async {
@@ -358,10 +358,6 @@ class _PreInsWidgetState extends State<PreInsWidget> {
     await file.writeAsBytes(bytes, flush: true);
 
     OpenFile.open('$path/$fileName');
-    // initEmptyFields();
-    setState(() {
-      pr.hide();
-    });
   }
 
   initEmptyFields() {
@@ -373,17 +369,20 @@ class _PreInsWidgetState extends State<PreInsWidget> {
       platNomorController.text = '';
       typeKendaraanController.text = '';
       teknisiController.text = '';
-      tampakDepanImg!.path == '';
+      tampakDepanImg!.path == null;
       kmImg!.path == '';
-      tampakDepanImg!.path == '';
-      kisiBlowerImg!.path == '';
-      suhuWindSpdImg!.path == '';
-      filterCabinImg!.path == '';
+      tampakDepanImg!.path == null;
+      xFile = null;
+      // kisiBlowerImg!.path == '';
+      // suhuWindSpdImg!.path == '';
+      // filterCabinImg!.path == '';
 
-      rsltAccuImg!.path == '';
-      remarkPerawatanList.clear();
-      remarkPergantianList.clear();
+      // rsltAccuImg!.path == '';
+      // remarkPerawatanList.clear();
+      // remarkPergantianList.clear();
+      PreDiagnosisDatabaseProvider.db.deleteAllItems();
     });
+    setState(() {});
   }
 
   Future<Uint8List> _readImageData(String name) async {
@@ -810,17 +809,17 @@ class _PreInsWidgetState extends State<PreInsWidget> {
                         onTap: () {
                           getImage(ImageSource.camera, TypeImages.km);
                         },
-                        child: kmImg != null
-                            ? Image.file(
+                        child: kmImg == null || xFile == null
+                            ? Image.asset(
+                                'assets/image_camera.jpg',
+                                height: 200,
+                                width: 200,
+                              )
+                            : Image.file(
                                 File(kmImg!.path),
                                 height: 200,
                                 width: 200,
                                 fit: BoxFit.cover,
-                              )
-                            : Image.asset(
-                                'assets/image_camera.jpg',
-                                height: 200,
-                                width: 200,
                               ),
                       ),
                       SizedBox(
@@ -834,17 +833,17 @@ class _PreInsWidgetState extends State<PreInsWidget> {
                         onTap: () {
                           getImage(ImageSource.camera, TypeImages.tampakDepan);
                         },
-                        child: tampakDepanImg != null
-                            ? Image.file(
+                        child: tampakDepanImg == null || xFile == null
+                            ? Image.asset(
+                                'assets/image_camera.jpg',
+                                height: 200,
+                                width: 200,
+                              )
+                            : Image.file(
                                 File(tampakDepanImg!.path),
                                 height: 200,
                                 width: 200,
                                 fit: BoxFit.cover,
-                              )
-                            : Image.asset(
-                                'assets/image_camera.jpg',
-                                height: 200,
-                                width: 200,
                               ),
                       ),
                       SizedBox(
@@ -873,18 +872,26 @@ class _PreInsWidgetState extends State<PreInsWidget> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text('Diagnosis'),
+                              Spacer(),
                               InkWell(
                                 onTap: () async {
-                                  Navigator.push(context,
+                                  PreDiagnosisDatabaseProvider.db
+                                      .deleteAllItems();
+                                  setState(() {});
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text('Delete All'),
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () async {
+                                  await Navigator.push(context,
                                       MaterialPageRoute(builder: (_) {
                                     return InputDiagnosisScreen();
                                   }));
-                                  // await showPlatformDialog(
-                                  //     context: context,
-                                  //     builder: (_) => BasicDialogAlert(
-                                  //           title: Text('Add Diagnosis'),
-                                  //           content: diagnosisFields(),
-                                  //         ));
+
+                                  setState(() {});
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -893,79 +900,6 @@ class _PreInsWidgetState extends State<PreInsWidget> {
                               ),
                             ],
                           ),
-                          // SizedBox(
-                          //   height: 8.0,
-                          // ),
-                          // Text('Kisi-kisi Blower'),
-                          // SizedBox(
-                          //   height: 8.0,
-                          // ),
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          //   children: [
-                          //     Expanded(
-                          //       child: Padding(
-                          //         padding: const EdgeInsets.only(right: 8.0),
-                          //         child: InkWell(
-                          //           onTap: () {
-                          //             getImage(ImageSource.camera,
-                          //                 TypeImages.kisiBlower);
-                          //           },
-                          //           child: kisiBlowerImg != null
-                          //               ? Image.file(
-                          //                   File(kisiBlowerImg!.path),
-                          //                   height: 100,
-                          //                   width: 100,
-                          //                   fit: BoxFit.cover,
-                          //                 )
-                          //               : Image.asset(
-                          //                   'assets/image_camera.jpg',
-                          //                   height: 100,
-                          //                   width: 100,
-                          //                 ),
-                          //         ),
-                          //       ),
-                          //     ),
-                          //     Expanded(
-                          //       child: Container(
-                          //         height: 100,
-                          //         child: TextFormField(
-                          //           maxLines: 5,
-                          //           controller: kisiRemarkController,
-                          //           textInputAction: TextInputAction.next,
-                          //           obscureText: false,
-                          //           style: const TextStyle(
-                          //               fontFamily: 'Montserrat', fontSize: 16.0),
-                          //           decoration: InputDecoration(
-                          //               enabledBorder: OutlineInputBorder(
-                          //                   borderSide: BorderSide(
-                          //                       color:
-                          //                           ColorConstant.colorPrimary),
-                          //                   borderRadius:
-                          //                       BorderRadius.circular(10.0)),
-                          //               disabledBorder: OutlineInputBorder(
-                          //                   borderSide: const BorderSide(
-                          //                       color:
-                          //                           ColorConstant.colorPrimary),
-                          //                   borderRadius:
-                          //                       BorderRadius.circular(10.0)),
-                          //               labelText: 'Remark',
-                          //               labelStyle: const TextStyle(
-                          //                   color: ColorConstant.colorPrimary),
-                          //               contentPadding: const EdgeInsets.fromLTRB(
-                          //                   20.0, 15.0, 20.0, 15.0),
-                          //               // hintText: "Email",
-                          //               border: OutlineInputBorder(
-                          //                   borderRadius:
-                          //                       BorderRadius.circular(10.0))),
-                          //         ),
-                          //       ),
-                          //     ),
-                          //   ],
-                          // ),
-                          // SizedBox(
-                          //   height: 8.0,
-                          // ),
                           FutureBuilder<List<Diagnosis>>(
                               future: PreDiagnosisDatabaseProvider.db
                                   .getAllDiagnosis(),

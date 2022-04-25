@@ -134,11 +134,15 @@ class _HomeScreenState extends State<HomeScreen>
                 bubbleColor: Colors.blue,
                 icon: Icons.directions_car,
                 titleStyle: TextStyle(fontSize: 16, color: Colors.white),
-                onPress: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                onPress: () async {
+                  await Navigator.push(context,
+                      MaterialPageRoute(builder: (context) {
                     return PreInsScreen();
                   }));
                   _animationController!.reverse();
+                  setState(() {
+                    listDir();
+                  });
                 },
               ),
               // Floating action menu item
@@ -148,11 +152,15 @@ class _HomeScreenState extends State<HomeScreen>
                 bubbleColor: Colors.blue,
                 icon: Icons.local_car_wash,
                 titleStyle: TextStyle(fontSize: 16, color: Colors.white),
-                onPress: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                onPress: () async {
+                  await Navigator.push(context,
+                      MaterialPageRoute(builder: (context) {
                     return PostInsScreen();
                   }));
                   _animationController!.reverse();
+                  setState(() {
+                    listDir();
+                  });
                 },
               ),
             ],

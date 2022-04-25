@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, avoid_print, unnecessary_string_interpolations, unnecessary_null_comparison, must_call_super, prefer_typing_uninitialized_variables, deprecated_member_use, unused_local_variable
+// ignore_for_file: postfer_const_constructors, avoid_print, unnecessary_string_interpolations, unnecessary_null_comparison, must_call_super, postfer_typing_uninitialized_variables, depostcated_member_use, unused_local_variable
 
 import 'dart:convert';
 import 'dart:developer';
@@ -7,7 +7,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:inspection/helpers/pre_diagnosis_db.dart';
+import 'package:inspection/helpers/post_diagnosis_db.dart';
 import 'package:inspection/helpers/diagnosis_model.dart';
 import 'package:inspection/helpers/helpers.dart';
 import 'package:inspection/sejuk/constants/constants.dart';
@@ -15,7 +15,7 @@ import 'package:inspection/helpers/toast.dart';
 import 'package:inspection/sejuk/input_remark/screens/input_remark_screen.dart';
 import 'package:inspection/mobile.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:inspection/sejuk/pre_ins/screens/input_diagnosis_screen.dart';
+import 'package:inspection/sejuk/post_ins/screens/input_diagnosis_screen.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
@@ -85,7 +85,7 @@ class _PostInsWidgetState extends State<PostInsWidget> {
     pr.style(message: 'Mohon tunggu...');
     // DiagnosisDatabaseProvider.db.deleteAllItems();
 
-    PostDiagnosisDatabaseProvider.db.getAllDiagnosis();
+    PreDiagnosisDatabaseProvider.db.getAllDiagnosis();
   }
 
   getImage(ImageSource source, TypeImages typeImg) async {
@@ -130,36 +130,37 @@ class _PostInsWidgetState extends State<PostInsWidget> {
     } else if (diagnosiss.length == 0) {
       myToast.showToast(context, 'Data Diagnosis masing kosong!');
     } else {
-      setState(() {
-        outputPerawatanRemark = [];
-        outputPergantianRemark = [];
-      });
-      if (remarkPerawatanList.isNotEmpty) {
-        // remarkPerawatanList.sort((item1, item2) => item1.compareTo(item2));
-        for (int i = 0; i < remarkPerawatanList.reversed.length; i++) {
-          var act = remarkPerawatanList[i];
+      // setState(() {
+      //   outputPerawatanRemark = [];
+      //   outputPergantianRemark = [];
+      // });
+      // if (remarkPerawatanList.isNotEmpty) {
+      //   // remarkPerawatanList.sort((item1, item2) => item1.compareTo(item2));
+      //   for (int i = 0; i < remarkPerawatanList.reversed.length; i++) {
+      //     var act = remarkPerawatanList[i];
 
-          // if (activities[i].contains(',')) {
-          // }
-          // String res = act.replaceAll(',', '^');
-          print("replace: ${i + 1}. $act");
-          outputPerawatanRemark.insert(0, '${i + 1}. $act');
-        }
-      }
-      if (remarkPergantianList.isNotEmpty) {
-        // remarkPergantianList.sort((item1, item2) => item1.compareTo(item2));
-        for (int i = 0; i < remarkPergantianList.reversed.length; i++) {
-          var act = remarkPergantianList[i];
-          // if (activities[i].contains(',')) {
-          // }
-          // String res = act.replaceAll(',', '^');
-          print("replace: ${i + 1}. $act");
-          outputPergantianRemark.insert(0, '${i + 1}. $act');
-        }
-      }
-      pr.show();
+      //     // if (activities[i].contains(',')) {
+      //     // }
+      //     // String res = act.replaceAll(',', '^');
+      //     print("replace: ${i + 1}. $act");
+      //     outputPerawatanRemark.insert(0, '${i + 1}. $act');
+      //   }
+      // }
+      // if (remarkPergantianList.isNotEmpty) {
+      //   // remarkPergantianList.sort((item1, item2) => item1.compareTo(item2));
+      //   for (int i = 0; i < remarkPergantianList.reversed.length; i++) {
+      //     var act = remarkPergantianList[i];
+      //     // if (activities[i].contains(',')) {
+      //     // }
+      //     // String res = act.replaceAll(',', '^');
+      //     print("replace: ${i + 1}. $act");
+      //     outputPergantianRemark.insert(0, '${i + 1}. $act');
+      //   }
+      // }
+      // pr.show();
 
       _createPDF();
+      setState(() {});
     }
   }
 
@@ -184,96 +185,96 @@ class _PostInsWidgetState extends State<PostInsWidget> {
     page.graphics.drawString(
         'Telpon: 021-58907848', PdfStandardFont(PdfFontFamily.helvetica, 12),
         bounds: Rect.fromLTWH(220, 65, 0, 0));
-    //pre-inspection check list
-    PdfGrid preGrid = PdfGrid();
-    preGrid.columns.add(count: 7);
-    preGrid.headers.add(1);
+    //post-inspection check list
+    PdfGrid postGrid = PdfGrid();
+    postGrid.columns.add(count: 7);
+    postGrid.headers.add(1);
 
-    PdfGridRow preHeader = preGrid.headers[0];
-    preHeader.cells[0].value = 'PRE-INSPECTION CHECK LIST';
-    preHeader.cells[0].columnSpan = 7;
-    preHeader.cells[0].style = PdfGridCellStyle(
+    PdfGridRow postHeader = postGrid.headers[0];
+    postHeader.cells[0].value = 'POST-INSPECTION CHECK LIST';
+    postHeader.cells[0].columnSpan = 7;
+    postHeader.cells[0].style = PdfGridCellStyle(
       font: PdfStandardFont(PdfFontFamily.helvetica, 20),
       textBrush: PdfBrushes.red,
     );
-    preHeader.cells[0].style.stringFormat =
+    postHeader.cells[0].style.stringFormat =
         PdfStringFormat(alignment: PdfTextAlignment.center);
 
-    PdfGridRow preRow = preGrid.rows.add();
-    preRow.cells[0].value = 'HARI/TANGGAL';
-    preRow.cells[1].value = dateController.text;
-    preRow.cells[1].columnSpan = 3;
-    preRow.cells[4].value = 'KENDARAAN TAMPAK DEPAN';
-    preRow.cells[4].columnSpan = 3;
-    preRow.cells[4].style.stringFormat =
+    PdfGridRow postRow = postGrid.rows.add();
+    postRow.cells[0].value = 'HARI/TANGGAL';
+    postRow.cells[1].value = dateController.text;
+    postRow.cells[1].columnSpan = 3;
+    postRow.cells[4].value = 'KENDARAAN TAMPAK DEPAN';
+    postRow.cells[4].columnSpan = 3;
+    postRow.cells[4].style.stringFormat =
         PdfStringFormat(alignment: PdfTextAlignment.center);
 
-    preRow = preGrid.rows.add();
-    preRow.cells[0].value = 'NO. WORK ORDER';
-    preRow.cells[1].value = noWoController.text;
-    preRow.cells[1].columnSpan = 3;
-    preRow.cells[4].rowSpan = 6;
+    postRow = postGrid.rows.add();
+    postRow.cells[0].value = 'NO. WORK ORDER';
+    postRow.cells[1].value = noWoController.text;
+    postRow.cells[1].columnSpan = 3;
+    postRow.cells[4].rowSpan = 6;
     try {
-      preRow.cells[5].rowSpan = 6;
-      preRow.cells[5].value =
+      postRow.cells[5].rowSpan = 6;
+      postRow.cells[5].value =
           PdfBitmap(await _readLclStrgImageData(tampakDepanImg!.path));
-      preRow.cells[5].style = PdfGridCellStyle(
+      postRow.cells[5].style = PdfGridCellStyle(
           cellPadding: PdfPaddings(bottom: 0, left: 0, right: 0, top: 0));
     } catch (e) {
       log(e.toString());
     }
-    preRow.cells[6].rowSpan = 6;
+    postRow.cells[6].rowSpan = 6;
 
-    preRow = preGrid.rows.add();
-    preRow.cells[0].value = 'PLAT NOMOR';
-    preRow.cells[1].value = platNomorController.text;
-    preRow.cells[1].columnSpan = 3;
+    postRow = postGrid.rows.add();
+    postRow.cells[0].value = 'PLAT NOMOR';
+    postRow.cells[1].value = platNomorController.text;
+    postRow.cells[1].columnSpan = 3;
 
-    preRow = preGrid.rows.add();
-    preRow.cells[0].value = 'TYPE KENDARAAN';
-    preRow.cells[1].value = typeKendaraanController.text;
-    preRow.cells[1].columnSpan = 3;
+    postRow = postGrid.rows.add();
+    postRow.cells[0].value = 'TYPE KENDARAAN';
+    postRow.cells[1].value = typeKendaraanController.text;
+    postRow.cells[1].columnSpan = 3;
 
-    preRow = preGrid.rows.add();
-    preRow.cells[0].value = 'TEKNISI';
-    preRow.cells[1].value = teknisiController.text;
-    preRow.cells[1].columnSpan = 3;
+    postRow = postGrid.rows.add();
+    postRow.cells[0].value = 'TEKNISI';
+    postRow.cells[1].value = teknisiController.text;
+    postRow.cells[1].columnSpan = 3;
 
-    preRow = preGrid.rows.add();
-    preRow.cells[0].rowSpan = 2;
-    preRow.cells[0].value = 'KILO METER (KM) 140.020 KM';
-    preRow.cells[1].rowSpan = 2;
+    postRow = postGrid.rows.add();
+    postRow.cells[0].rowSpan = 2;
+    postRow.cells[0].value = 'KILO METER (KM) 140.020 KM';
+    postRow.cells[1].rowSpan = 2;
     try {
-      preRow.cells[2].rowSpan = 2;
-      preRow.cells[2].value =
+      postRow.cells[2].rowSpan = 2;
+      postRow.cells[2].value =
           PdfBitmap(await _readLclStrgImageData(kmImg!.path));
-      preRow.cells[2].style = PdfGridCellStyle(
+      postRow.cells[2].style = PdfGridCellStyle(
           cellPadding: PdfPaddings(bottom: 0, left: 0, right: 0, top: 0));
     } catch (e) {
       log(e.toString());
     }
-    preRow.cells[3].rowSpan = 2;
-    preRow.cells[4].value = '';
-    preRow.cells[5].value = '';
-    preRow.cells[6].value = '';
-    preRow.height = 30;
+    postRow.cells[3].rowSpan = 2;
+    postRow.cells[4].value = '';
+    postRow.cells[5].value = '';
+    postRow.cells[6].value = '';
+    postRow.height = 30;
 
-    preRow = preGrid.rows.add();
-    preRow.height = 20;
-    preRow.cells[4].columnSpan = 3;
+    postRow = postGrid.rows.add();
+    postRow.height = 20;
+    postRow.cells[4].columnSpan = 3;
 
-    preGrid.columns[0].width = 125;
-    preGrid.columns[1].width = 50;
-    preGrid.columns[2].width = 120;
-    preGrid.columns[3].width = 50;
-    preGrid.columns[4].width = 25;
-    preGrid.columns[5].width = 120;
-    preGrid.columns[6].width = 25;
+    postGrid.columns[0].width = 125;
+    postGrid.columns[1].width = 50;
+    postGrid.columns[2].width = 120;
+    postGrid.columns[3].width = 50;
+    postGrid.columns[4].width = 25;
+    postGrid.columns[5].width = 120;
+    postGrid.columns[6].width = 25;
 
-    preGrid.style = PdfGridStyle(
+    postGrid.style = PdfGridStyle(
         cellPadding: PdfPaddings(left: 2, right: 0, top: 4, bottom: 0));
 
-    preGrid.draw(page: page, bounds: Rect.fromLTWH(0, 100, 0, 0));
+    postGrid.draw(page: page, bounds: Rect.fromLTWH(0, 100, 0, 0));
 
     PdfGrid grid = PdfGrid();
     grid.columns.add(count: 4);
@@ -345,10 +346,9 @@ class _PostInsWidgetState extends State<PostInsWidget> {
     List<int> bytes = document.save();
     document.dispose();
 
-    saveAndLaunchFile(bytes, '${noWoController.text}.pdf');
-    setState(() {
-      pr.hide();
-    });
+    await saveAndLaunchFile(bytes, '${noWoController.text}.pdf');
+    initEmptyFields();
+    setState(() {});
   }
 
   Future<void> saveAndLaunchFile(List<int> bytes, String fileName) async {
@@ -359,9 +359,6 @@ class _PostInsWidgetState extends State<PostInsWidget> {
 
     OpenFile.open('$path/$fileName');
     // initEmptyFields();
-    setState(() {
-      pr.hide();
-    });
   }
 
   initEmptyFields() {
@@ -373,17 +370,20 @@ class _PostInsWidgetState extends State<PostInsWidget> {
       platNomorController.text = '';
       typeKendaraanController.text = '';
       teknisiController.text = '';
-      tampakDepanImg!.path == '';
+      tampakDepanImg!.path == null;
       kmImg!.path == '';
-      tampakDepanImg!.path == '';
-      kisiBlowerImg!.path == '';
-      suhuWindSpdImg!.path == '';
-      filterCabinImg!.path == '';
+      tampakDepanImg!.path == null;
+      xFile = null;
+      // kisiBlowerImg!.path == '';
+      // suhuWindSpdImg!.path == '';
+      // filterCabinImg!.path == '';
 
-      rsltAccuImg!.path == '';
-      remarkPerawatanList.clear();
-      remarkPergantianList.clear();
+      // rsltAccuImg!.path == '';
+      // remarkPerawatanList.clear();
+      // remarkPergantianList.clear();
+      PreDiagnosisDatabaseProvider.db.deleteAllItems();
     });
+    setState(() {});
   }
 
   Future<Uint8List> _readImageData(String name) async {
@@ -591,10 +591,10 @@ class _PostInsWidgetState extends State<PostInsWidget> {
                       title: diagnosisController.text,
                       remark: remarkDiagnosisController.text,
                       img: Utility.base64String(_selectFile.readAsBytesSync()));
-                  await PostDiagnosisDatabaseProvider.db
+                  await PreDiagnosisDatabaseProvider.db
                       .addItemToDatabase(diagnosis);
                   Navigator.of(context).pop();
-                  PostDiagnosisDatabaseProvider.db.getAllDiagnosis();
+                  PreDiagnosisDatabaseProvider.db.getAllDiagnosis();
                   setState(() {
                     diagnosisController.text = '';
                     remarkDiagnosisController.text = '';
@@ -623,7 +623,7 @@ class _PostInsWidgetState extends State<PostInsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    PostDiagnosisDatabaseProvider.db.getAllDiagnosis();
+    PreDiagnosisDatabaseProvider.db.getAllDiagnosis();
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -810,17 +810,17 @@ class _PostInsWidgetState extends State<PostInsWidget> {
                         onTap: () {
                           getImage(ImageSource.camera, TypeImages.km);
                         },
-                        child: kmImg != null
-                            ? Image.file(
+                        child: kmImg == null || xFile == null
+                            ? Image.asset(
+                                'assets/image_camera.jpg',
+                                height: 200,
+                                width: 200,
+                              )
+                            : Image.file(
                                 File(kmImg!.path),
                                 height: 200,
                                 width: 200,
                                 fit: BoxFit.cover,
-                              )
-                            : Image.asset(
-                                'assets/image_camera.jpg',
-                                height: 200,
-                                width: 200,
                               ),
                       ),
                       SizedBox(
@@ -834,17 +834,17 @@ class _PostInsWidgetState extends State<PostInsWidget> {
                         onTap: () {
                           getImage(ImageSource.camera, TypeImages.tampakDepan);
                         },
-                        child: tampakDepanImg != null
-                            ? Image.file(
+                        child: tampakDepanImg == null || xFile == null
+                            ? Image.asset(
+                                'assets/image_camera.jpg',
+                                height: 200,
+                                width: 200,
+                              )
+                            : Image.file(
                                 File(tampakDepanImg!.path),
                                 height: 200,
                                 width: 200,
                                 fit: BoxFit.cover,
-                              )
-                            : Image.asset(
-                                'assets/image_camera.jpg',
-                                height: 200,
-                                width: 200,
                               ),
                       ),
                       SizedBox(
@@ -873,9 +873,21 @@ class _PostInsWidgetState extends State<PostInsWidget> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text('Diagnosis'),
+                              Spacer(),
                               InkWell(
                                 onTap: () async {
-                                  Navigator.push(context,
+                                  PreDiagnosisDatabaseProvider.db
+                                      .deleteAllItems();
+                                  setState(() {});
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text('Delete All'),
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () async {
+                                  await Navigator.push(context,
                                       MaterialPageRoute(builder: (_) {
                                     return InputDiagnosisScreen();
                                   }));
@@ -885,6 +897,7 @@ class _PostInsWidgetState extends State<PostInsWidget> {
                                   //           title: Text('Add Diagnosis'),
                                   //           content: diagnosisFields(),
                                   //         ));
+                                  setState(() {});
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -967,7 +980,7 @@ class _PostInsWidgetState extends State<PostInsWidget> {
                           //   height: 8.0,
                           // ),
                           FutureBuilder<List<Diagnosis>>(
-                              future: PostDiagnosisDatabaseProvider.db
+                              future: PreDiagnosisDatabaseProvider.db
                                   .getAllDiagnosis(),
                               builder: (BuildContext context,
                                   AsyncSnapshot<List<Diagnosis>> snapshot) {
@@ -1035,13 +1048,13 @@ class _PostInsWidgetState extends State<PostInsWidget> {
                                                     Spacer(),
                                                     InkWell(
                                                         onTap: () async {
-                                                          await PostDiagnosisDatabaseProvider
+                                                          await PreDiagnosisDatabaseProvider
                                                               .db
                                                               .deleteItemWithId(
                                                                   diagnosis
                                                                       .id!);
                                                           setState(() {});
-                                                          await PostDiagnosisDatabaseProvider
+                                                          await PreDiagnosisDatabaseProvider
                                                               .db
                                                               .getAllDiagnosis();
                                                         },
